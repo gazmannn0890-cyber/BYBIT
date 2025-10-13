@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BVBIT | Дашборд трейдера</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -61,6 +62,13 @@
 
         .logo-icon {
             color: var(--accent-orange);
+            transition: all 0.3s ease;
+        }
+
+        .logo:hover .logo-icon {
+            color: var(--accent-orange-light);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
         }
 
         .nav-menu {
@@ -82,15 +90,31 @@
             transition: all 0.3s ease;
         }
 
-        .nav-link:hover,
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .nav-link:hover i {
+            color: var(--accent-orange);
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.4));
+        }
+
         .nav-link.active {
             background: rgba(255, 107, 0, 0.1);
             color: var(--accent-orange);
         }
 
-        .nav-link i {
-            width: 20px;
-            text-align: center;
+        .nav-link.active i {
+            color: var(--accent-orange);
+            transform: scale(1.1);
         }
 
         .balance-card {
@@ -163,6 +187,11 @@
             transition: all 0.3s ease;
         }
 
+        .tab:hover {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
         .tab.active {
             background: var(--accent-orange);
             color: var(--text-light);
@@ -183,6 +212,11 @@
             padding: 1.5rem;
             position: relative;
             overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
         }
 
         .stat-card::before {
@@ -241,6 +275,12 @@
             border-radius: 8px;
             padding: 0.5rem 1rem;
             color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
         }
 
         .table {
@@ -287,6 +327,146 @@
             color: var(--error);
         }
 
+        /* Buttons */
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: var(--text-light);
+        }
+
+        .btn-danger:hover {
+            background: #cc3333;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-gray);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        /* Profile Styles */
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .profile-info h2 {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-id {
+            color: var(--text-gray);
+            font-family: monospace;
+        }
+
+        .devices-list {
+            margin-top: 1.5rem;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .device-details {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .device-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .security-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .action-group h4 {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
         /* Empty State */
         .empty-state {
             text-align: center;
@@ -298,12 +478,22 @@
             font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state:hover i {
+            opacity: 0.8;
+            transform: scale(1.1);
         }
 
         /* Responsive */
         @media (max-width: 1024px) {
             .dashboard {
                 grid-template-columns: 200px 1fr;
+            }
+            
+            .profile-section {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -350,24 +540,6 @@
                     <a href="#" class="nav-link" data-page="requests">
                         <i class="fas fa-tasks"></i>
                         Заявки
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-page="disputes">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Споры
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-page="devices">
-                        <i class="fas fa-mobile-alt"></i>
-                        Устройства
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#" class="nav-link" data-page="reports">
-                        <i class="fas fa-file-alt"></i>
-                        Отчеты
                     </a>
                 </li>
                 <li class="nav-item">
@@ -552,7 +724,7 @@
                 <div class="table-container">
                     <div class="table-header">
                         <h3>Заявки</h3>
-                        <button class="tab" style="background: var(--success);">
+                        <button class="btn btn-primary">
                             <i class="fas fa-download"></i>
                             Принять заявки
                         </button>
@@ -580,6 +752,109 @@
                     </table>
                 </div>
             </div>
+
+            <!-- Profile Page -->
+            <div class="page-content" id="profile-page" style="display: none;">
+                <div class="profile-section">
+                    <!-- Profile Info -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h2>Трейдер #001</h2>
+                                <div class="profile-id">ID: TRD-7X9B-2C4D-8A1F</div>
+                                <div style="color: var(--success); margin-top: 0.5rem;">
+                                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i>
+                                    Активен
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="devices-list">
+                            <h4 style="color: var(--text-light); margin-bottom: 1rem;">
+                                <i class="fas fa-laptop"></i>
+                                Активные устройства (3)
+                            </h4>
+                            
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">Windows PC - Chrome</div>
+                                    <div class="device-details">
+                                        Последний вход: 15.12.2023 14:30 • IP: 192.168.1.100
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-danger" onclick="removeDevice(1)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">Android Phone - Firefox</div>
+                                    <div class="device-details">
+                                        Последний вход: 14.12.2023 09:15 • IP: 192.168.1.101
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-danger" onclick="removeDevice(2)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">MacBook - Safari</div>
+                                    <div class="device-details">
+                                        Последний вход: 13.12.2023 18:45 • IP: 192.168.1.102
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-danger" onclick="removeDevice(3)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Actions -->
+                    <div class="profile-card">
+                        <div class="security-actions">
+                            <div class="action-group">
+                                <h4><i class="fas fa-shield-alt"></i> Безопасность аккаунта</h4>
+                                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="changePassword()">
+                                    <i class="fas fa-key"></i>
+                                    Сменить пароль
+                                </button>
+                            </div>
+
+                            <div class="action-group">
+                                <h4><i class="fas fa-sign-out-alt"></i> Управление сессиями</h4>
+                                <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="logoutAllDevices()">
+                                    <i class="fas fa-globe"></i>
+                                    Выйти из всех устройств
+                                </button>
+                            </div>
+
+                            <div class="action-group">
+                                <h4><i class="fas fa-info-circle"></i> Информация об аккаунте</h4>
+                                <div style="color: var(--text-gray); line-height: 1.8;">
+                                    <div><strong>Дата регистрации:</strong> 01.11.2023</div>
+                                    <div><strong>Статус верификации:</strong> ✅ Подтвержден</div>
+                                    <div><strong>Уровень доступа:</strong> Трейдер</div>
+                                    <div><strong>Последняя активность:</strong> 15.12.2023 14:30</div>
+                                    <div><strong>Общее время онлайн:</strong> 248 часов</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </main>
     </div>
 
@@ -595,7 +870,8 @@
                 
                 // Update page title
                 const pageTitle = document.querySelector('.page-title');
-                pageTitle.textContent = this.textContent.trim();
+                const pageName = this.textContent.trim();
+                pageTitle.textContent = pageName;
                 
                 // Show/hide pages
                 const pageId = this.getAttribute('data-page') + '-page';
@@ -617,6 +893,29 @@
                 }
             });
         });
+
+        // Profile functions
+        function removeDevice(deviceId) {
+            if (confirm('Вы уверены, что хотите удалить это устройство?')) {
+                alert(`Устройство #${deviceId} удалено`);
+                // In real app, make API call to remove device
+            }
+        }
+
+        function changePassword() {
+            const newPassword = prompt('Введите новый пароль:');
+            if (newPassword) {
+                alert('Пароль успешно изменен!');
+                // In real app, make API call to change password
+            }
+        }
+
+        function logoutAllDevices() {
+            if (confirm('Вы уверены, что хотите выйти из всех устройств? Текущая сессия останется активной.')) {
+                alert('Выход со всех устройств выполнен!');
+                // In real app, make API call to logout all devices
+            }
+        }
 
         // Mock data updates
         function updateStats() {
