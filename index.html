@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoExchange | Быстрый обмен криптовалют</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>BVBIT | Быстрый обмен криптовалют</title>
+    <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -13,17 +13,18 @@
         <div class="container">
             <div class="nav">
                 <div class="logo">
-                    <span class="logo-icon">🔄</span>
-                    <span class="logo-text">CryptoExchange</span>
+                    <span class="logo-icon">⚡</span>
+                    <span class="logo-text">BVBIT</span>
                 </div>
                 <nav class="nav-links">
-                    <a href="#" class="nav-link">Обмен</a>
+                    <a href="#" class="nav-link active">Обмен</a>
                     <a href="#" class="nav-link">История</a>
+                    <a href="#" class="nav-link">О нас</a>
                     <a href="#" class="nav-link">Контакты</a>
                 </nav>
                 <div class="nav-actions">
-                    <button class="btn-secondary">Войти</button>
-                    <button class="btn-primary">Регистрация</button>
+                    <button class="btn-secondary" id="login-btn">Войти</button>
+                    <button class="btn-primary" id="register-btn">Регистрация</button>
                 </div>
             </div>
         </div>
@@ -33,24 +34,30 @@
     <main class="main">
         <div class="container">
             <div class="exchange-widget">
-                <h1 class="widget-title">Обмен криптовалют</h1>
-                <p class="widget-subtitle">Быстро, безопасно, выгодно</p>
+                <div class="widget-header">
+                    <h1 class="widget-title">Обмен криптовалют</h1>
+                    <p class="widget-subtitle">Мгновенный обмен по лучшим курсам от Bybit</p>
+                </div>
                 
                 <div class="exchange-form">
                     <!-- You Give -->
                     <div class="form-group">
                         <label class="form-label">Отдаете</label>
                         <div class="currency-input">
-                            <input type="number" class="input-field" placeholder="0.0" id="from-amount">
+                            <input type="number" class="input-field" placeholder="0.0" id="from-amount" value="100">
                             <div class="currency-selector">
                                 <select class="currency-dropdown" id="from-currency">
+                                    <option value="USDT">USDT</option>
                                     <option value="BTC">BTC</option>
                                     <option value="ETH">ETH</option>
-                                    <option value="USDT" selected>USDT</option>
                                     <option value="TON">TON</option>
                                     <option value="RUB">RUB</option>
+                                    <option value="USD">USD</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="balance-info">
+                            <span>Баланс: <strong id="from-balance">0.00</strong> <span id="from-balance-currency">USDT</span></span>
                         </div>
                     </div>
 
@@ -65,7 +72,7 @@
                     <div class="form-group">
                         <label class="form-label">Получаете</label>
                         <div class="currency-input">
-                            <input type="number" class="input-field" placeholder="0.0" id="to-amount">
+                            <input type="number" class="input-field" placeholder="0.0" id="to-amount" readonly>
                             <div class="currency-selector">
                                 <select class="currency-dropdown" id="to-currency">
                                     <option value="BTC">BTC</option>
@@ -73,63 +80,101 @@
                                     <option value="USDT">USDT</option>
                                     <option value="TON">TON</option>
                                     <option value="RUB">RUB</option>
+                                    <option value="USD">USD</option>
                                 </select>
                             </div>
+                        </div>
+                        <div class="balance-info">
+                            <span>Баланс: <strong id="to-balance">0.00</strong> <span id="to-balance-currency">ETH</span></span>
                         </div>
                     </div>
 
                     <!-- Exchange Info -->
                     <div class="exchange-info">
                         <div class="info-row">
-                            <span>Курс:</span>
+                            <span>Курс обмена:</span>
                             <span id="exchange-rate">1 USDT = 0.000254 BTC</span>
                         </div>
                         <div class="info-row">
-                            <span>Комиссия:</span>
+                            <span>Комиссия платформы:</span>
                             <span id="fee-amount">0.5%</span>
                         </div>
-                        <div class="info-row total">
-                            <span>Итого к получению:</span>
+                        <div class="info-row">
+                            <span>Сумма к получению:</span>
                             <span id="total-amount">0.0 ETH</span>
+                        </div>
+                        <div class="info-row total">
+                            <span>Итого после комиссии:</span>
+                            <span id="final-amount">0.0 ETH</span>
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <button class="exchange-btn" id="exchange-button">
-                        Обменять
+                        <span class="btn-text">Обменять</span>
+                        <span class="btn-loader" style="display: none;">⏳</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <h2 class="section-title">Почему выбирают BVBIT?</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🚀</div>
+                        <h3>Мгновенный обмен</h3>
+                        <p>Обмен занимает менее 2-5 минут</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h3>Безопасность</h3>
+                        <p>Non-custodial технология, ваши ключи под контролем</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">💎</div>
+                        <h3>Лучшие курсы</h3>
+                        <p>Курсы напрямую от биржи Bybit без скрытых комиссий</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h3>Доступность</h3>
+                        <p>Работаем по всему миру 24/7</p>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
 
-    <!-- Features Section -->
-    <section class="features">
-        <div class="container">
-            <div class="features-grid">
-                <div class="feature-card">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Быстро</h3>
-                    <p>Обмен занимает менее 5 минут</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">🛡️</div>
-                    <h3>Безопасно</h3>
-                    <p>Non-custodial обмен без хранения средств</p>
-                </div>
-                <div class="feature-card">
-                    <div class="feature-icon">💎</div>
-                    <h3>Выгодно</h3>
-                    <p>Лучшие курсы от ведущих бирж</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 CryptoExchange. Все права защищены.</p>
+            <div class="footer-content">
+                <div class="footer-section">
+                    <div class="logo">
+                        <span class="logo-icon">⚡</span>
+                        <span class="logo-text">BVBIT</span>
+                    </div>
+                    <p>Современная платформа для безопасного обмена криптовалют</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Навигация</h4>
+                    <a href="#">Обмен</a>
+                    <a href="#">История</a>
+                    <a href="#">О нас</a>
+                    <a href="#">Контакты</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Поддержка</h4>
+                    <a href="#">Помощь</a>
+                    <a href="#">FAQ</a>
+                    <a href="#">Условия использования</a>
+                    <a href="#">Политика конфиденциальности</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 BVBIT. Все права защищены.</p>
+            </div>
         </div>
     </footer>
 
