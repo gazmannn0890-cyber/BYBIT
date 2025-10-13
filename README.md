@@ -1,26 +1,26 @@
-# GILF&co Exchange
+# 🚀 GILF&co - Cryptocurrency Exchange Platform
 
-Modern cryptocurrency exchange platform with Bybit integration.
+Современная платформа для мгновенного обмена криптовалют с интеграцией Bybit.
 
-## Features
+## ✨ Особенности
 
-- 🚀 Fast cryptocurrency exchanges
-- 🛡️ Non-custodial (users hold their keys)
-- 💸 Competitive rates from Bybit
-- 🎨 Modern UI with white/black/orange theme
-- 📱 Responsive design
+- ⚡ **Мгновенный обмен** - сделки завершаются за 2-5 минут
+- 🛡️ **Non-custodial** - ваши ключи, ваш контроль над средствами
+- 💰 **Прозрачные комиссии** - всего 0.5% без скрытых платежей
+- 🎯 **Лучшие курсы** - цены напрямую от биржи Bybit
+- 📱 **Адаптивный дизайн** - работает на всех устройствах
+- 🎨 **Современный UI** - черно-оранжевая тема
 
-## Tech Stack
+## 🛠 Технологии
 
-- HTML5, CSS3, JavaScript
-- Bybit API for rates and execution
-- Responsive design
-- Modern CSS with Flexbox/Grid
+- **Frontend**: HTML5, CSS3, Vanilla JavaScript
+- **Стили**: CSS Grid, Flexbox, CSS Variables
+- **Шрифты**: Inter Google Font
+- **Иконки**: Emoji (временное решение)
 
-## Setup
+## 🚀 Быстрый старт
 
-1. Clone the repository
-2. Open `index.html` in your browser
-3. For development, use a local server
-
-## Project Structure
+1. **Клонируйте репозиторий**:
+```bash
+git clone https://github.com/gazmannn0890-cyber/GILF&co.git
+cd GILF&co
