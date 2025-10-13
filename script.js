@@ -5,23 +5,23 @@ const CONFIG = {
         'USDT-ETH': 0.00054,
         'USDT-BTC': 0.0000254,
         'ETH-BTC': 0.047,
-        'RUB-USDT': 0.0092,
-        'USD-USDT': 0.98,
-        'TON-USDT': 3.2,
+        'USDT-TON': 0.31,
+        'USDT-SOL': 0.042,
+        'USDT-BNB': 0.0032,
         'BTC-ETH': 21.2,
         'ETH-USDT': 1850,
         'BTC-USDT': 39350,
-        'USDT-RUB': 108.5,
-        'USDT-USD': 1.02,
-        'USDT-TON': 0.31
+        'TON-USDT': 3.2,
+        'SOL-USDT': 23.8,
+        'BNB-USDT': 312.5
     },
     userBalances: {
         'USDT': 1250.50,
         'BTC': 0.025,
         'ETH': 1.8,
         'TON': 45.2,
-        'RUB': 0,
-        'USD': 500
+        'SOL': 8.5,
+        'BNB': 3.2
     }
 };
 
@@ -42,13 +42,20 @@ const elements = {
     // Балансы
     fromBalance: document.getElementById('from-balance'),
     toBalance: document.getElementById('to-balance'),
-    fromBalanceCurrency: document.getElementById('from-balance-currency'),
-    toBalanceCurrency: document.getElementById('to-balance-currency'),
-    
-    // Кнопки
-    loginBtn: document.getElementById('login-btn'),
-    registerBtn: document.getElementById('register-btn')
+    fromCurrencyLabel: document.getElementById('from-currency-label'),
+    toCurrencyLabel: document.getElementById('to-currency-label')
 };
+
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', function() {
+    initEventListeners();
+    updateCurrencyIcons();
+    calculateExchange();
+    updateBalanceDisplay();
+    
+    console.log('🚀 BVBIT Exchange initialized!');
+    console.log('💱 Available pairs:', Object.keys(CONFIG.defaultPairs));
+});
 
 // Получение курса обмена
 function getExchangeRate(from, to) {
@@ -83,8 +90,8 @@ function calculateExchange() {
     const to = elements.toCurrency.value;
     const amount = parseFloat(elements.fromAmount.value) || 0;
     
-    // Обновляем отображение балансов
-    updateBalanceDisplay();
+    // Обновляем иконки валют
+    updateCurrencyIcons();
     
     if (amount <= 0) {
         elements.toAmount.value = '';
@@ -105,6 +112,23 @@ function calculateExchange() {
     // Форматирование и отображение
     elements.toAmount.value = formatNumber(receivedAmount, to);
     updateExchangeInfo(amount, from, to, rate, fee, receivedAmount);
+}
+
+// Обновление иконок валют
+function updateCurrencyIcons() {
+    const fromCurrency = elements.fromCurrency.value;
+    const toCurrency = elements.toCurrency.value;
+    
+    // Обновляем иконки в селекторах
+    document.querySelectorAll('.currency-icon i').forEach(icon => {
+        icon.style.display = 'none';
+    });
+    
+    const fromIcon = document.querySelector(`.currency-icon i[data-currency="${fromCurrency}"]`);
+    const toIcon = document.querySelector(`.currency-icon i[data-currency="${toCurrency}"]`);
+    
+    if (fromIcon) fromIcon.style.display = 'inline';
+    if (toIcon) toIcon.style.display = 'inline';
 }
 
 // Обновление информации об обмене
@@ -130,9 +154,9 @@ function updateBalanceDisplay() {
     const toCurrency = elements.toCurrency.value;
     
     elements.fromBalance.textContent = formatNumber(CONFIG.userBalances[fromCurrency] || 0, fromCurrency);
-    elements.fromBalanceCurrency.textContent = fromCurrency;
+    elements.fromCurrencyLabel.textContent = fromCurrency;
     elements.toBalance.textContent = formatNumber(CONFIG.userBalances[toCurrency] || 0, toCurrency);
-    elements.toBalanceCurrency.textContent = toCurrency;
+    elements.toCurrencyLabel.textContent = toCurrency;
 }
 
 // Обновление состояния кнопки обмена
@@ -140,23 +164,17 @@ function updateExchangeButton(enabled) {
     if (enabled) {
         elements.exchangeButton.disabled = false;
         elements.exchangeButton.style.opacity = '1';
+        elements.exchangeButton.querySelector('.btn-text').textContent = 'Начать обмен';
     } else {
         elements.exchangeButton.disabled = true;
         elements.exchangeButton.style.opacity = '0.6';
+        elements.exchangeButton.querySelector('.btn-text').textContent = 'Недостаточно средств';
     }
 }
 
 // Форматирование чисел в зависимости от валюты
 function formatNumber(num, currency = '') {
     if (!num || isNaN(num)) return '0.00';
-    
-    // Для фиатных валют
-    if (['USD', 'RUB'].includes(currency)) {
-        return new Intl.NumberFormat('ru-RU', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        }).format(num);
-    }
     
     // Для криптовалют
     if (num >= 1000) {
@@ -194,6 +212,7 @@ function swapCurrencies() {
     
     // Пересчитываем
     calculateExchange();
+    updateBalanceDisplay();
 }
 
 // Валидация обмена
@@ -253,8 +272,8 @@ async function processExchange() {
     
     // Блокируем интерфейс
     elements.exchangeButton.disabled = true;
-    elements.exchangeButton.querySelector('.btn-text').textContent = 'Обработка...';
-    elements.exchangeButton.querySelector('.btn-loader').style.display = 'inline';
+    elements.exchangeButton.querySelector('.btn-content').style.opacity = '0';
+    elements.exchangeButton.querySelector('.btn-loader').style.display = 'block';
     
     try {
         // Имитация запроса к API Bybit
@@ -269,19 +288,28 @@ async function processExchange() {
         // Обновляем отображение
         updateBalanceDisplay();
         
-        // Можно очистить форму
+        // Анимация успеха
+        elements.exchangeButton.style.background = 'linear-gradient(135deg, var(--success) 0%, #00b359 100%)';
+        
         setTimeout(() => {
+            // Восстанавливаем кнопку
+            elements.exchangeButton.disabled = false;
+            elements.exchangeButton.querySelector('.btn-content').style.opacity = '1';
+            elements.exchangeButton.querySelector('.btn-loader').style.display = 'none';
+            elements.exchangeButton.style.background = 'linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-dark) 100%)';
+            
+            // Очищаем форму
             elements.fromAmount.value = '';
             elements.toAmount.value = '';
             calculateExchange();
-        }, 1000);
+        }, 1500);
         
     } catch (error) {
         showNotification('❌ Ошибка при выполнении обмена. Попробуйте позже.', 'error');
-    } finally {
-        // Восстанавливаем кнопку
+        
+        // Восстанавливаем кнопку при ошибке
         elements.exchangeButton.disabled = false;
-        elements.exchangeButton.querySelector('.btn-text').textContent = 'Обменять';
+        elements.exchangeButton.querySelector('.btn-content').style.opacity = '1';
         elements.exchangeButton.querySelector('.btn-loader').style.display = 'none';
     }
 }
@@ -302,33 +330,22 @@ function initEventListeners() {
     elements.swapBtn.addEventListener('click', swapCurrencies);
     elements.exchangeButton.addEventListener('click', processExchange);
     
-    // События кнопок авторизации
-    elements.loginBtn.addEventListener('click', () => {
-        showNotification('Функция авторизации будет реализована в ближайшее время', 'info');
-    });
-    
-    elements.registerBtn.addEventListener('click', () => {
-        showNotification('Функция регистрации будет реализована в ближайшее время', 'info');
-    });
-    
     // Запрет ввода отрицательных чисел
     elements.fromAmount.addEventListener('keydown', (e) => {
         if (e.key === '-' || e.key === 'e') {
             e.preventDefault();
         }
     });
-}
-
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', function() {
-    initEventListeners();
-    calculateExchange();
-    updateBalanceDisplay();
     
-    console.log('🚀 BVBIT Exchange initialized!');
-    console.log('💱 Available pairs:', Object.keys(CONFIG.defaultPairs));
-    console.log('👤 User balances:', CONFIG.userBalances);
-});
+    // Анимация при фокусе
+    elements.fromAmount.addEventListener('focus', function() {
+        this.parentElement.style.transform = 'scale(1.02)';
+    });
+    
+    elements.fromAmount.addEventListener('blur', function() {
+        this.parentElement.style.transform = 'scale(1)';
+    });
+}
 
 // Глобальные функции для отладки
 window.debugExchange = {
