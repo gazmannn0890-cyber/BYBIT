@@ -3,249 +3,630 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BVBIT | Crypto Exchange</title>
-    <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <title>BVBIT | Дашборд трейдера</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #0f0f0f;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --accent-orange: #ff6b00;
+            --accent-orange-dark: #e55e00;
+            --accent-orange-light: #ff8c42;
+            --text-silver: #e0e0e0;
+            --text-gray: #b0b0b0;
+            --text-light: #ffffff;
+            --success: #00d26a;
+            --error: #ff4444;
+            --warning: #ffaa00;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-silver);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: var(--darker-bg);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem 1rem;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .logo-icon {
+            color: var(--accent-orange);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .balance-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .balance-amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--success);
+            margin: 0.5rem 0;
+        }
+
+        .deposit-list {
+            margin-top: 1rem;
+        }
+
+        .deposit-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            background: var(--dark-bg);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-orange);
+        }
+
+        .stat-title {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-subvalue {
+            font-size: 1rem;
+            color: var(--text-gray);
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-light);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .table td {
+            color: var(--text-silver);
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(0, 210, 106, 0.2);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .status-error {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 200px 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Side Decorations -->
-    <div class="side-decoration left"></div>
-    <div class="side-decoration right"></div>
-
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="nav">
-                <div class="logo">
-                    <span class="logo-icon">₿</span>
-                    <span class="logo-text">BVBIT</span>
-                </div>
-                <nav class="nav-links">
-                    <a href="#" class="nav-link active">Главная</a>
-                    <a href="#" class="nav-link">О нас</a>
-                    <a href="#" class="nav-link">Контакты</a>
-                </nav>
-                <div class="nav-actions">
-                    <button class="btn-login">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line logo-icon"></i>
+                <span>BVBIT</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="statistics">
+                        <i class="fas fa-chart-bar"></i>
+                        Статистика
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="cash">
                         <i class="fas fa-wallet"></i>
-                        Подключить кошелек
-                    </button>
+                        Мой CA$H
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="deals">
+                        <i class="fas fa-exchange-alt"></i>
+                        Сделки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="requests">
+                        <i class="fas fa-tasks"></i>
+                        Заявки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="disputes">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Споры
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="devices">
+                        <i class="fas fa-mobile-alt"></i>
+                        Устройства
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="reports">
+                        <i class="fas fa-file-alt"></i>
+                        Отчеты
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        Профиль
+                    </a>
+                </li>
+            </ul>
+
+            <div class="balance-card">
+                <div class="balance-title">Баланс</div>
+                <div class="balance-amount">0 RUB ✅</div>
+                <div class="balance-subtitle">Базис депозита (1)</div>
+                
+                <div class="deposit-list">
+                    <div class="deposit-item">
+                        <strong>RU</strong>
+                        <div>9999. Test / RU</div>
+                        <small>ID: 2aef4eaf-b5ad...</small>
+                    </div>
                 </div>
             </div>
-        </div>
-    </header>
+        </aside>
 
-    <!-- Main Content -->
-    <main class="main">
-        <div class="container">
-            <!-- Exchange Widget -->
-            <div class="exchange-section">
-                <div class="section-header">
-                    <h1 class="main-title">Обмен Криптовалют</h1>
-                    <p class="subtitle">Мгновенные свопы по лучшим курсам рынка</p>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Статистика</h1>
+                <div class="user-info">
+                    <div class="user-name">Трейдер #001</div>
+                    <div class="user-status online"></div>
                 </div>
+            </div>
 
-                <div class="exchange-widget">
-                    <div class="widget-header">
-                        <div class="rate-indicator">
-                            <i class="fas fa-bolt"></i>
-                            <span>Курс обновляется в реальном времени</span>
-                        </div>
+            <!-- Statistics Page -->
+            <div class="page-content" id="statistics-page">
+                <div class="stats-grid">
+                    <!-- Payin Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Payin</h3>
+                        <div class="stat-value">Всего сделок</div>
+                        <div class="stat-subvalue">Завершено: 0</div>
+                        <div class="stat-subvalue">В процессе: 0</div>
                     </div>
 
-                    <div class="exchange-form">
-                        <!-- From Section -->
-                        <div class="currency-section">
-                            <div class="section-label">
-                                <span>Отдаете</span>
-                                <div class="balance">
-                                    Баланс: <strong id="from-balance">0.00</strong> <span id="from-currency-label">USDT</span>
-                                </div>
-                            </div>
-                            <div class="currency-input-wrapper">
-                                <input type="number" class="currency-input" id="from-amount" placeholder="0.0" value="100">
-                                <div class="currency-selector">
-                                    <select class="currency-dropdown" id="from-currency">
-                                        <option value="USDT">USDT</option>
-                                        <option value="BTC">BTC</option>
-                                        <option value="ETH">ETH</option>
-                                        <option value="TON">TON</option>
-                                        <option value="SOL">SOL</option>
-                                        <option value="BNB">BNB</option>
-                                    </select>
-                                    <div class="currency-icon">
-                                        <i class="fab fa-usdt" data-currency="USDT"></i>
-                                        <i class="fab fa-btc" data-currency="BTC"></i>
-                                        <i class="fab fa-ethereum" data-currency="ETH"></i>
-                                        <i class="fas fa-rocket" data-currency="TON"></i>
-                                        <i class="fas fa-sun" data-currency="SOL"></i>
-                                        <i class="fas fa-chart-line" data-currency="BNB"></i>
+                    <div class="stat-card">
+                        <h3 class="stat-title">Подтвержденные</h3>
+                        <div class="stat-value">0 RUB</div>
+                        <div class="stat-subvalue">0 USDT</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Прибыль</h3>
+                        <div class="stat-value">0 USDT</div>
+                    </div>
+
+                    <!-- Payout Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Payout</h3>
+                        <div class="stat-value">Всего сделок</div>
+                        <div class="stat-subvalue">Завершено: 0</div>
+                        <div class="stat-subvalue">В процессе: 0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Подтвержденные</h3>
+                        <div class="stat-value">0 RUB</div>
+                        <div class="stat-subvalue">0 USDT</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Прибыль</h3>
+                        <div class="stat-value">0 USDT</div>
+                    </div>
+
+                    <!-- Additional Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Активные устройства</h3>
+                        <div class="stat-value">0</div>
+                        <div class="stat-subvalue">Активные реквизиты: 0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Среднее время обработки спора</h3>
+                        <div class="stat-value">00:00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Page -->
+            <div class="page-content" id="cash-page" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active">Все</button>
+                    <button class="tab">Пополнения</button>
+                    <button class="tab">Выводы</button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Финансы</h3>
+                        <div class="filters">
+                            <input type="text" class="search-box" placeholder="Поиск...">
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Транзакция</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>ID транзакции</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-coins"></i>
+                                        <div>Данные отсутствуют</div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                        <!-- Swap Button -->
-                        <div class="swap-section">
-                            <button class="swap-btn" id="swap-currencies">
-                                <i class="fas fa-exchange-alt"></i>
-                            </button>
-                        </div>
+            <!-- Deals Page -->
+            <div class="page-content" id="deals-page" style="display: none;">
+                <div class="filters" style="margin-bottom: 2rem;">
+                    <input type="text" class="search-box" placeholder="Поиск...">
+                    <select class="search-box">
+                        <option>Все</option>
+                        <option>Завершены</option>
+                        <option>В процессе</option>
+                    </select>
+                    <select class="search-box">
+                        <option>Сумма, RUB</option>
+                        <option>Дата</option>
+                        <option>Статус</option>
+                    </select>
+                </div>
 
-                        <!-- To Section -->
-                        <div class="currency-section">
-                            <div class="section-label">
-                                <span>Получаете</span>
-                                <div class="balance">
-                                    Баланс: <strong id="to-balance">0.00</strong> <span id="to-currency-label">ETH</span>
-                                </div>
-                            </div>
-                            <div class="currency-input-wrapper">
-                                <input type="number" class="currency-input" id="to-amount" placeholder="0.0" readonly>
-                                <div class="currency-selector">
-                                    <select class="currency-dropdown" id="to-currency">
-                                        <option value="BTC">BTC</option>
-                                        <option value="ETH" selected>ETH</option>
-                                        <option value="USDT">USDT</option>
-                                        <option value="TON">TON</option>
-                                        <option value="SOL">SOL</option>
-                                        <option value="BNB">BNB</option>
-                                    </select>
-                                    <div class="currency-icon">
-                                        <i class="fab fa-btc" data-currency="BTC"></i>
-                                        <i class="fab fa-ethereum" data-currency="ETH"></i>
-                                        <i class="fab fa-usdt" data-currency="USDT"></i>
-                                        <i class="fas fa-rocket" data-currency="TON"></i>
-                                        <i class="fas fa-sun" data-currency="SOL"></i>
-                                        <i class="fas fa-chart-line" data-currency="BNB"></i>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Сделки</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                                <th>Контрагент</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-exchange-alt"></i>
+                                        <div>Данные отсутствуют</div>
                                     </div>
-                                </div>
-                            </div>
-                        </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-                        <!-- Exchange Info -->
-                        <div class="exchange-info">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Курс обмена</span>
-                                    <span class="info-value" id="exchange-rate">1 USDT = 0.00054 ETH</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Комиссия</span>
-                                    <span class="info-value" id="fee-amount">0.5%</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Сумма к получению</span>
-                                    <span class="info-value" id="total-amount">0.054 ETH</span>
-                                </div>
-                                <div class="info-item total">
-                                    <span class="info-label">Итого</span>
-                                    <span class="info-value" id="final-amount">0.05373 ETH</span>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Requests Page -->
+            <div class="page-content" id="requests-page" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active">Ожидают</button>
+                    <button class="tab">В работе</button>
+                    <button class="tab">Аппеляции</button>
+                    <button class="tab">История</button>
+                </div>
 
-                        <!-- Action Button -->
-                        <button class="exchange-action-btn" id="exchange-button">
-                            <span class="btn-content">
-                                <i class="fas fa-exchange-alt"></i>
-                                <span class="btn-text">Начать обмен</span>
-                            </span>
-                            <div class="btn-loader" style="display: none;">
-                                <div class="loader-dots">
-                                    <div class="dot"></div>
-                                    <div class="dot"></div>
-                                    <div class="dot"></div>
-                                </div>
-                            </div>
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Заявки</h3>
+                        <button class="tab" style="background: var(--success);">
+                            <i class="fas fa-download"></i>
+                            Принять заявки
                         </button>
                     </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID заявки</th>
+                                <th>Сумма</th>
+                                <th>Валюта</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-tasks"></i>
+                                        <div>Данные отсутствуют</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
+        </main>
+    </div>
 
-            <!-- Features Section -->
-            <div class="features-section">
-                <h2 class="section-title">Почему выбирают BVBIT?</h2>
-                <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                        <h3>Мгновенные сделки</h3>
-                        <p>Обмен занимает менее 2 минут благодаря прямой интеграции с биржами</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-shield-alt"></i>
-                        </div>
-                        <h3>Максимальная безопасность</h3>
-                        <p>Non-custodial технология - только вы контролируете свои средства</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                        <h3>Лучшие курсы</h3>
-                        <p>Агрегация ликвидности с ведущих бирж для оптимальных цен</p>
-                    </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <h3>Доступность 24/7</h3>
-                        <p>Работаем по всему миру без перерывов и выходных</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+    <script>
+        // Navigation between pages
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update page title
+                const pageTitle = document.querySelector('.page-title');
+                pageTitle.textContent = this.textContent.trim();
+                
+                // Show/hide pages
+                const pageId = this.getAttribute('data-page') + '-page';
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.style.display = 'none';
+                });
+                document.getElementById(pageId).style.display = 'block';
+            });
+        });
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <div class="logo">
-                        <span class="logo-icon">₿</span>
-                        <span class="logo-text">BVBIT</span>
-                    </div>
-                    <p class="footer-description">Передовая платформа для безопасного обмена криптовалют</p>
-                    <div class="social-links">
-                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
-                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
-                    </div>
-                </div>
-                <div class="footer-section">
-                    <h4>Платформа</h4>
-                    <a href="#"><i class="fas fa-exchange-alt"></i> Обмен</a>
-                    <a href="#"><i class="fas fa-chart-bar"></i> Аналитика</a>
-                    <a href="#"><i class="fas fa-wallet"></i> Кошельки</a>
-                    <a href="#"><i class="fas fa-history"></i> История</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Поддержка</h4>
-                    <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
-                    <a href="#"><i class="fas fa-book"></i> База знаний</a>
-                    <a href="#"><i class="fas fa-users"></i> Сообщество</a>
-                    <a href="#"><i class="fas fa-headset"></i> Контакты</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Компания</h4>
-                    <a href="#"><i class="fas fa-info-circle"></i> О нас</a>
-                    <a href="#"><i class="fas fa-newspaper"></i> Блог</a>
-                    <a href="#"><i class="fas fa-briefcase"></i> Карьера</a>
-                    <a href="#"><i class="fas fa-file-contract"></i> Политика</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2024 BVBIT. Все права защищены. Сделано для крипто-энтузиастов</p>
-            </div>
-        </div>
-    </footer>
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                if (!this.classList.contains('active')) {
+                    this.parentElement.querySelectorAll('.tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
 
-    <script src="script.js"></script>
+        // Mock data updates
+        function updateStats() {
+            // In real app, this would fetch from API
+            console.log('Updating dashboard stats...');
+        }
+
+        // Initialize
+        updateStats();
+        setInterval(updateStats, 30000); // Update every 30 seconds
+    </script>
 </body>
 </html>
