@@ -1,4 +1,4 @@
-# 🚀 GILF&co - Cryptocurrency Exchange Platform
+# 🚀 BVBIT - Cryptocurrency Exchange Platform
 
 Современная платформа для мгновенного обмена криптовалют с интеграцией Bybit.
 
@@ -22,5 +22,5 @@
 
 1. **Клонируйте репозиторий**:
 ```bash
-git clone https://github.com/gazmannn0890-cyber/GILF&co.git
+git clone https://github.com/gazmannn0890-cyber/BVBIT.git
 cd GILF&co
