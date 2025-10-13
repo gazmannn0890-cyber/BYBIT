@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CryptoExchange | Быстрый обмен криптовалют</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="nav">
+                <div class="logo">
+                    <span class="logo-icon">🔄</span>
+                    <span class="logo-text">CryptoExchange</span>
+                </div>
+                <nav class="nav-links">
+                    <a href="#" class="nav-link">Обмен</a>
+                    <a href="#" class="nav-link">История</a>
+                    <a href="#" class="nav-link">Контакты</a>
+                </nav>
+                <div class="nav-actions">
+                    <button class="btn-secondary">Войти</button>
+                    <button class="btn-primary">Регистрация</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="exchange-widget">
+                <h1 class="widget-title">Обмен криптовалют</h1>
+                <p class="widget-subtitle">Быстро, безопасно, выгодно</p>
+                
+                <div class="exchange-form">
+                    <!-- You Give -->
+                    <div class="form-group">
+                        <label class="form-label">Отдаете</label>
+                        <div class="currency-input">
+                            <input type="number" class="input-field" placeholder="0.0" id="from-amount">
+                            <div class="currency-selector">
+                                <select class="currency-dropdown" id="from-currency">
+                                    <option value="BTC">BTC</option>
+                                    <option value="ETH">ETH</option>
+                                    <option value="USDT" selected>USDT</option>
+                                    <option value="TON">TON</option>
+                                    <option value="RUB">RUB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Swap Button -->
+                    <div class="swap-container">
+                        <button class="swap-btn" id="swap-currencies">
+                            ⇅
+                        </button>
+                    </div>
+
+                    <!-- You Get -->
+                    <div class="form-group">
+                        <label class="form-label">Получаете</label>
+                        <div class="currency-input">
+                            <input type="number" class="input-field" placeholder="0.0" id="to-amount">
+                            <div class="currency-selector">
+                                <select class="currency-dropdown" id="to-currency">
+                                    <option value="BTC">BTC</option>
+                                    <option value="ETH" selected>ETH</option>
+                                    <option value="USDT">USDT</option>
+                                    <option value="TON">TON</option>
+                                    <option value="RUB">RUB</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exchange Info -->
+                    <div class="exchange-info">
+                        <div class="info-row">
+                            <span>Курс:</span>
+                            <span id="exchange-rate">1 USDT = 0.000254 BTC</span>
+                        </div>
+                        <div class="info-row">
+                            <span>Комиссия:</span>
+                            <span id="fee-amount">0.5%</span>
+                        </div>
+                        <div class="info-row total">
+                            <span>Итого к получению:</span>
+                            <span id="total-amount">0.0 ETH</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button class="exchange-btn" id="exchange-button">
+                        Обменять
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">⚡</div>
+                    <h3>Быстро</h3>
+                    <p>Обмен занимает менее 5 минут</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">🛡️</div>
+                    <h3>Безопасно</h3>
+                    <p>Non-custodial обмен без хранения средств</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">💎</div>
+                    <h3>Выгодно</h3>
+                    <p>Лучшие курсы от ведущих бирж</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 CryptoExchange. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
