@@ -3,28 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>GILF&co | Быстрый обмен криптовалют</title>
+    <title>BVBIT | Crypto Exchange</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
 <body>
+    <!-- Side Decorations -->
+    <div class="side-decoration left"></div>
+    <div class="side-decoration right"></div>
+
     <!-- Header -->
     <header class="header">
         <div class="container">
             <div class="nav">
                 <div class="logo">
-                    <span class="logo-icon">⚡</span>
-                    <span class="logo-text">GILF&co</span>
+                    <span class="logo-icon">₿</span>
+                    <span class="logo-text">BVBIT</span>
                 </div>
                 <nav class="nav-links">
-                    <a href="#" class="nav-link active">Обмен</a>
-                    <a href="#" class="nav-link">История</a>
+                    <a href="#" class="nav-link active">Главная</a>
                     <a href="#" class="nav-link">О нас</a>
                     <a href="#" class="nav-link">Контакты</a>
                 </nav>
                 <div class="nav-actions">
-                    <button class="btn-secondary" id="login-btn">Войти</button>
-                    <button class="btn-primary" id="register-btn">Регистрация</button>
+                    <button class="btn-login">
+                        <i class="fas fa-wallet"></i>
+                        Подключить кошелек
+                    </button>
                 </div>
             </div>
         </div>
@@ -33,113 +39,162 @@
     <!-- Main Content -->
     <main class="main">
         <div class="container">
-            <div class="exchange-widget">
-                <div class="widget-header">
-                    <h1 class="widget-title">Обмен криптовалют</h1>
-                    <p class="widget-subtitle">Мгновенный обмен по лучшим курсам от Bybit</p>
+            <!-- Exchange Widget -->
+            <div class="exchange-section">
+                <div class="section-header">
+                    <h1 class="main-title">Обмен Криптовалют</h1>
+                    <p class="subtitle">Мгновенные свопы по лучшим курсам рынка</p>
                 </div>
-                
-                <div class="exchange-form">
-                    <!-- You Give -->
-                    <div class="form-group">
-                        <label class="form-label">Отдаете</label>
-                        <div class="currency-input">
-                            <input type="number" class="input-field" placeholder="0.0" id="from-amount" value="100">
-                            <div class="currency-selector">
-                                <select class="currency-dropdown" id="from-currency">
-                                    <option value="USDT">USDT</option>
-                                    <option value="BTC">BTC</option>
-                                    <option value="ETH">ETH</option>
-                                    <option value="TON">TON</option>
-                                    <option value="RUB">RUB</option>
-                                    <option value="USD">USD</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="balance-info">
-                            <span>Баланс: <strong id="from-balance">0.00</strong> <span id="from-balance-currency">USDT</span></span>
+
+                <div class="exchange-widget">
+                    <div class="widget-header">
+                        <div class="rate-indicator">
+                            <i class="fas fa-bolt"></i>
+                            <span>Курс обновляется в реальном времени</span>
                         </div>
                     </div>
 
-                    <!-- Swap Button -->
-                    <div class="swap-container">
-                        <button class="swap-btn" id="swap-currencies">
-                            ⇅
+                    <div class="exchange-form">
+                        <!-- From Section -->
+                        <div class="currency-section">
+                            <div class="section-label">
+                                <span>Отдаете</span>
+                                <div class="balance">
+                                    Баланс: <strong id="from-balance">0.00</strong> <span id="from-currency-label">USDT</span>
+                                </div>
+                            </div>
+                            <div class="currency-input-wrapper">
+                                <input type="number" class="currency-input" id="from-amount" placeholder="0.0" value="100">
+                                <div class="currency-selector">
+                                    <select class="currency-dropdown" id="from-currency">
+                                        <option value="USDT">USDT</option>
+                                        <option value="BTC">BTC</option>
+                                        <option value="ETH">ETH</option>
+                                        <option value="TON">TON</option>
+                                        <option value="SOL">SOL</option>
+                                        <option value="BNB">BNB</option>
+                                    </select>
+                                    <div class="currency-icon">
+                                        <i class="fab fa-usdt" data-currency="USDT"></i>
+                                        <i class="fab fa-btc" data-currency="BTC"></i>
+                                        <i class="fab fa-ethereum" data-currency="ETH"></i>
+                                        <i class="fas fa-rocket" data-currency="TON"></i>
+                                        <i class="fas fa-sun" data-currency="SOL"></i>
+                                        <i class="fas fa-chart-line" data-currency="BNB"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swap Button -->
+                        <div class="swap-section">
+                            <button class="swap-btn" id="swap-currencies">
+                                <i class="fas fa-exchange-alt"></i>
+                            </button>
+                        </div>
+
+                        <!-- To Section -->
+                        <div class="currency-section">
+                            <div class="section-label">
+                                <span>Получаете</span>
+                                <div class="balance">
+                                    Баланс: <strong id="to-balance">0.00</strong> <span id="to-currency-label">ETH</span>
+                                </div>
+                            </div>
+                            <div class="currency-input-wrapper">
+                                <input type="number" class="currency-input" id="to-amount" placeholder="0.0" readonly>
+                                <div class="currency-selector">
+                                    <select class="currency-dropdown" id="to-currency">
+                                        <option value="BTC">BTC</option>
+                                        <option value="ETH" selected>ETH</option>
+                                        <option value="USDT">USDT</option>
+                                        <option value="TON">TON</option>
+                                        <option value="SOL">SOL</option>
+                                        <option value="BNB">BNB</option>
+                                    </select>
+                                    <div class="currency-icon">
+                                        <i class="fab fa-btc" data-currency="BTC"></i>
+                                        <i class="fab fa-ethereum" data-currency="ETH"></i>
+                                        <i class="fab fa-usdt" data-currency="USDT"></i>
+                                        <i class="fas fa-rocket" data-currency="TON"></i>
+                                        <i class="fas fa-sun" data-currency="SOL"></i>
+                                        <i class="fas fa-chart-line" data-currency="BNB"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Exchange Info -->
+                        <div class="exchange-info">
+                            <div class="info-grid">
+                                <div class="info-item">
+                                    <span class="info-label">Курс обмена</span>
+                                    <span class="info-value" id="exchange-rate">1 USDT = 0.00054 ETH</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Комиссия</span>
+                                    <span class="info-value" id="fee-amount">0.5%</span>
+                                </div>
+                                <div class="info-item">
+                                    <span class="info-label">Сумма к получению</span>
+                                    <span class="info-value" id="total-amount">0.054 ETH</span>
+                                </div>
+                                <div class="info-item total">
+                                    <span class="info-label">Итого</span>
+                                    <span class="info-value" id="final-amount">0.05373 ETH</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Button -->
+                        <button class="exchange-action-btn" id="exchange-button">
+                            <span class="btn-content">
+                                <i class="fas fa-exchange-alt"></i>
+                                <span class="btn-text">Начать обмен</span>
+                            </span>
+                            <div class="btn-loader" style="display: none;">
+                                <div class="loader-dots">
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                    <div class="dot"></div>
+                                </div>
+                            </div>
                         </button>
                     </div>
-
-                    <!-- You Get -->
-                    <div class="form-group">
-                        <label class="form-label">Получаете</label>
-                        <div class="currency-input">
-                            <input type="number" class="input-field" placeholder="0.0" id="to-amount" readonly>
-                            <div class="currency-selector">
-                                <select class="currency-dropdown" id="to-currency">
-                                    <option value="BTC">BTC</option>
-                                    <option value="ETH" selected>ETH</option>
-                                    <option value="USDT">USDT</option>
-                                    <option value="TON">TON</option>
-                                    <option value="RUB">RUB</option>
-                                    <option value="USD">USD</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="balance-info">
-                            <span>Баланс: <strong id="to-balance">0.00</strong> <span id="to-balance-currency">ETH</span></span>
-                        </div>
-                    </div>
-
-                    <!-- Exchange Info -->
-                    <div class="exchange-info">
-                        <div class="info-row">
-                            <span>Курс обмена:</span>
-                            <span id="exchange-rate">1 USDT = 0.000254 BTC</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Комиссия платформы:</span>
-                            <span id="fee-amount">0.5%</span>
-                        </div>
-                        <div class="info-row">
-                            <span>Сумма к получению:</span>
-                            <span id="total-amount">0.0 ETH</span>
-                        </div>
-                        <div class="info-row total">
-                            <span>Итого после комиссии:</span>
-                            <span id="final-amount">0.0 ETH</span>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <button class="exchange-btn" id="exchange-button">
-                        <span class="btn-text">Обменять</span>
-                        <span class="btn-loader" style="display: none;">⏳</span>
-                    </button>
                 </div>
             </div>
 
             <!-- Features Section -->
             <div class="features-section">
-                <h2 class="section-title">Почему выбирают GILF&co?</h2>
+                <h2 class="section-title">Почему выбирают BVBIT?</h2>
                 <div class="features-grid">
                     <div class="feature-card">
-                        <div class="feature-icon">🚀</div>
-                        <h3>Мгновенный обмен</h3>
-                        <p>Обмен занимает менее 2-5 минут</p>
+                        <div class="feature-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3>Мгновенные сделки</h3>
+                        <p>Обмен занимает менее 2 минут благодаря прямой интеграции с биржами</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🛡️</div>
-                        <h3>Безопасность</h3>
-                        <p>Non-custodial технология, ваши ключи под контролем</p>
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h3>Максимальная безопасность</h3>
+                        <p>Non-custodial технология - только вы контролируете свои средства</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">💎</div>
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
                         <h3>Лучшие курсы</h3>
-                        <p>Курсы напрямую от биржи Bybit без скрытых комиссий</p>
+                        <p>Агрегация ликвидности с ведущих бирж для оптимальных цен</p>
                     </div>
                     <div class="feature-card">
-                        <div class="feature-icon">🌍</div>
-                        <h3>Доступность</h3>
-                        <p>Работаем по всему миру 24/7</p>
+                        <div class="feature-icon">
+                            <i class="fas fa-globe"></i>
+                        </div>
+                        <h3>Доступность 24/7</h3>
+                        <p>Работаем по всему миру без перерывов и выходных</p>
                     </div>
                 </div>
             </div>
@@ -152,28 +207,41 @@
             <div class="footer-content">
                 <div class="footer-section">
                     <div class="logo">
-                        <span class="logo-icon">⚡</span>
-                        <span class="logo-text">GILF&co</span>
+                        <span class="logo-icon">₿</span>
+                        <span class="logo-text">BVBIT</span>
                     </div>
-                    <p>Современная платформа для безопасного обмена криптовалют</p>
+                    <p class="footer-description">Передовая платформа для безопасного обмена криптовалют</p>
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-telegram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-discord"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-github"></i></a>
+                    </div>
                 </div>
                 <div class="footer-section">
-                    <h4>Навигация</h4>
-                    <a href="#">Обмен</a>
-                    <a href="#">История</a>
-                    <a href="#">О нас</a>
-                    <a href="#">Контакты</a>
+                    <h4>Платформа</h4>
+                    <a href="#"><i class="fas fa-exchange-alt"></i> Обмен</a>
+                    <a href="#"><i class="fas fa-chart-bar"></i> Аналитика</a>
+                    <a href="#"><i class="fas fa-wallet"></i> Кошельки</a>
+                    <a href="#"><i class="fas fa-history"></i> История</a>
                 </div>
                 <div class="footer-section">
                     <h4>Поддержка</h4>
-                    <a href="#">Помощь</a>
-                    <a href="#">FAQ</a>
-                    <a href="#">Условия использования</a>
-                    <a href="#">Политика конфиденциальности</a>
+                    <a href="#"><i class="fas fa-question-circle"></i> Помощь</a>
+                    <a href="#"><i class="fas fa-book"></i> База знаний</a>
+                    <a href="#"><i class="fas fa-users"></i> Сообщество</a>
+                    <a href="#"><i class="fas fa-headset"></i> Контакты</a>
+                </div>
+                <div class="footer-section">
+                    <h4>Компания</h4>
+                    <a href="#"><i class="fas fa-info-circle"></i> О нас</a>
+                    <a href="#"><i class="fas fa-newspaper"></i> Блог</a>
+                    <a href="#"><i class="fas fa-briefcase"></i> Карьера</a>
+                    <a href="#"><i class="fas fa-file-contract"></i> Политика</a>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 GILF&co. Все права защищены.</p>
+                <p>&copy; 2024 BVBIT. Все права защищены. Сделано для крипто-энтузиастов</p>
             </div>
         </div>
     </footer>
@@ -181,4 +249,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
