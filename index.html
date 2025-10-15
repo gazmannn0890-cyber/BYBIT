@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVBIT | Крипто-обменник</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #0f0f0f;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --accent-orange: #ff6b00;
+            --accent-orange-dark: #e55e00;
+            --text-silver: #e0e0e0;
+            --text-gray: #b0b0b0;
+            --text-light: #ffffff;
+            --success: #00d26a;
+            --error: #ff4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-silver);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            padding: 2rem;
+            align-items: center;
+        }
+
+        .hero-section {
+            text-align: left;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 2rem;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .logo-icon {
+            color: var(--accent-orange);
+            font-size: 3rem;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.3rem;
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .features {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: var(--text-gray);
+        }
+
+        .feature i {
+            color: var(--accent-orange);
+            font-size: 1.2rem;
+        }
+
+        .login-section {
+            display: flex;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .login-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-orange);
+        }
+
+        .login-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .login-subtitle {
+            color: var(--text-gray);
+            margin-bottom: 2rem;
+        }
+
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 2rem;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 0.8rem;
+            background: transparent;
+            border: none;
+            color: var(--text-gray);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .auth-tab.active {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+            outline: none;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            background: var(--accent-orange);
+            color: var(--text-light);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            background: var(--accent-orange-dark);
+            transform: translateY(-1px);
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        .code-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .code-input input {
+            flex: 1;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+        }
+
+        .resend-code {
+            color: var(--accent-orange);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .resend-code:disabled {
+            color: var(--text-gray);
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 968px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .hero-section {
+                text-align: center;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <div class="hero-section">
+            <div class="logo">
+                <i class="fas fa-chart-line logo-icon"></i>
+                <span>BVBIT</span>
+            </div>
+
+            <h1 class="hero-title">
+                Профессиональная 
+                платформа для 
+                трейдеров
+            </h1>
+            
+            <p class="hero-subtitle">
+                Обмен криптовалют, аналитика и управление 
+                активами в одном месте. Присоединяйтесь к 
+                ведущей платформе для профессиональных трейдеров.
+            </p>
+
+            <div class="features">
+                <div class="feature">
+                    <i class="fas fa-bolt"></i>
+                    <span>Мгновенные обмены по лучшим курсам</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Максимальная безопасность и контроль</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Продвинутая аналитика и отчетность</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-globe"></i>
+                    <span>Работаем по всему миру 24/7</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="login-section">
+            <div class="login-container">
+                <div class="login-card">
+                    <h1 class="login-title">Вход в систему</h1>
+                    <p class="login-subtitle">Добро пожаловать в BVBIT</p>
+
+                    <div class="auth-tabs">
+                        <button class="auth-tab active" data-type="phone">📱 Телефон</button>
+                        <button class="auth-tab" data-type="email">📧 Email</button>
+                    </div>
+
+                    <form id="phone-form" class="auth-form">
+                        <div class="form-group">
+                            <label class="form-label">Номер телефона</label>
+                            <input type="tel" class="form-input" id="phone" placeholder="+7 (999) 999-99-99" required>
+                            <div class="error-message" id="phone-error"></div>
+                        </div>
+
+                        <div class="form-group" id="code-group" style="display: none;">
+                            <label class="form-label">Код подтверждения</label>
+                            <div class="code-input">
+                                <input type="text" class="form-input" id="code" placeholder="000000" maxlength="6" required>
+                            </div>
+                            <button type="button" class="resend-code" id="resend-code" disabled>
+                                Отправить код повторно (60)
+                            </button>
+                            <div class="error-message" id="code-error"></div>
+                        </div>
+
+                        <button type="submit" class="btn" id="phone-submit">
+                            Получить код
+                        </button>
+                    </form>
+
+                    <form id="email-form" class="auth-form" style="display: none;">
+                        <div class="form-group">
+                            <label class="form-label">Email адрес</label>
+                            <input type="email" class="form-input" id="email" placeholder="your@email.com" required>
+                            <div class="error-message" id="email-error"></div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Пароль</label>
+                            <input type="password" class="form-input" id="password" placeholder="••••••••" required>
+                            <div class="error-message" id="password-error"></div>
+                        </div>
+
+                        <button type="submit" class="btn" id="email-submit">
+                            Войти
+                        </button>
+                    </form>
+
+                    <div class="success-message" id="success-message"></div>
+
+                    <div class="login-footer">
+                        © 2024 BVBIT. Все права защищены.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('auth_token')) {
+            window.location.href = 'dashboard.html';
+        }
+
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const type = this.getAttribute('data-type');
+                
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                
+                document.getElementById('phone-form').style.display = type === 'phone' ? 'block' : 'none';
+                document.getElementById('email-form').style.display = type === 'email' ? 'block' : 'none';
+                
+                resetForms();
+            });
+        });
+
+        document.getElementById('phone-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const phone = document.getElementById('phone').value;
+            const codeGroup = document.getElementById('code-group');
+            const submitBtn = document.getElementById('phone-submit');
+            
+            if (!codeGroup.style.display || codeGroup.style.display === 'none') {
+                if (validatePhone(phone)) {
+                    sendSMSCode(phone);
+                    codeGroup.style.display = 'block';
+                    submitBtn.textContent = 'Подтвердить вход';
+                    startResendTimer();
+                }
+            } else {
+                const code = document.getElementById('code').value;
+                if (validateCode(code)) {
+                    verifySMSCode(phone, code);
+                }
+            }
+        });
+
+        document.getElementById('email-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (validateEmail(email) && validatePassword(password)) {
+                loginWithEmail(email, password);
+            }
+        });
+
+        function validatePhone(phone) {
+            const phoneRegex = /^\+7\s?\(?\d{3}\)?\s?\d{3}-?\d{2}-?\d{2}$/;
+            if (!phoneRegex.test(phone)) {
+                showError('phone-error', 'Введите корректный номер телефона');
+                return false;
+            }
+            hideError('phone-error');
+            return true;
+        }
+
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError('email-error', 'Введите корректный email адрес');
+                return false;
+            }
+            hideError('email-error');
+            return true;
+        }
+
+        function validatePassword(password) {
+            if (password.length < 6) {
+                showError('password-error', 'Пароль должен содержать минимум 6 символов');
+                return false;
+            }
+            hideError('password-error');
+            return true;
+        }
+
+        function validateCode(code) {
+            if (code.length !== 6 || !/^\d+$/.test(code)) {
+                showError('code-error', 'Введите 6-значный код');
+                return false;
+            }
+            hideError('code-error');
+            return true;
+        }
+
+        function sendSMSCode(phone) {
+            showSuccess('Код отправлен на ваш телефон');
+            console.log('SMS code sent to:', phone);
+        }
+
+        function verifySMSCode(phone, code) {
+            if (code === '123456') {
+                showSuccess('Вход выполнен!');
+                localStorage.setItem('auth_token', 'demo_token_' + Date.now());
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                showError('code-error', 'Неверный код подтверждения');
+            }
+        }
+
+        function loginWithEmail(email, password) {
+            if (email === 'demo@bvbit.com' && password === '123456') {
+                showSuccess('Вход выполнен!');
+                localStorage.setItem('auth_token', 'demo_token_' + Date.now());
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1000);
+            } else {
+                showError('password-error', 'Неверный email или пароль');
+            }
+        }
+
+        function showError(elementId, message) {
+            const element = document.getElementById(elementId);
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function hideError(elementId) {
+            document.getElementById(elementId).style.display = 'none';
+        }
+
+        function showSuccess(message) {
+            const element = document.getElementById('success-message');
+            element.textContent = message;
+            element.style.display = 'block';
+            setTimeout(() => element.style.display = 'none', 3000);
+        }
+
+        function resetForms() {
+            document.querySelectorAll('.form-input').forEach(input => input.value = '');
+            document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
+            document.getElementById('code-group').style.display = 'none';
+            document.getElementById('phone-submit').textContent = 'Получить код';
+        }
+
+        function startResendTimer() {
+            let timeLeft = 60;
+            const resendBtn = document.getElementById('resend-code');
+            resendBtn.disabled = true;
+            
+            const timer = setInterval(() => {
+                resendBtn.textContent = `Отправить код повторно (${timeLeft})`;
+                timeLeft--;
+                
+                if (timeLeft < 0) {
+                    clearInterval(timer);
+                    resendBtn.disabled = false;
+                    resendBtn.textContent = 'Отправить код повторно';
+                }
+            }, 1000);
+            
+            resendBtn.onclick = function() {
+                const phone = document.getElementById('phone').value;
+                if (validatePhone(phone)) {
+                    sendSMSCode(phone);
+                    startResendTimer();
+                }
+            };
+        }
+    </script>
+</body>
+</html>
