@@ -3,7 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BVBIT | Крипто-обменник</title>
+    <title>BVBIT | Дашборд трейдера</title>
+    
+    <script>
+        // Check if user is logged in
+        if (!localStorage.getItem('auth_token')) {
+            window.location.href = 'index.html';
+        }
+
+        // Add logout function
+        function logout() {
+            localStorage.removeItem('auth_token');
+            window.location.href = 'index.html';
+        }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
@@ -20,564 +34,903 @@
             --card-border: #2a2a2a;
             --accent-orange: #ff6b00;
             --accent-orange-dark: #e55e00;
+            --accent-orange-light: #ff8c42;
             --text-silver: #e0e0e0;
             --text-gray: #b0b0b0;
             --text-light: #ffffff;
             --success: #00d26a;
             --error: #ff4444;
+            --warning: #ffaa00;
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background: var(--dark-bg);
             color: var(--text-silver);
+            line-height: 1.6;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
-        .main-container {
-            width: 100%;
-            max-width: 1200px;
+        .dashboard {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            padding: 2rem;
-            align-items: center;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
         }
 
-        /* Hero Section */
-        .hero-section {
-            text-align: left;
+        /* Sidebar */
+        .sidebar {
+            background: var(--darker-bg);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem 1rem;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             margin-bottom: 2rem;
-            font-size: 2.5rem;
-            font-weight: 800;
+            font-size: 1.5rem;
+            font-weight: 700;
             color: var(--text-light);
         }
 
         .logo-icon {
             color: var(--accent-orange);
-            font-size: 3rem;
+            transition: all 0.3s ease;
         }
 
-        .hero-title {
-            font-size: 3.5rem;
-            font-weight: 800;
-            line-height: 1.1;
-            margin-bottom: 1rem;
-            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-orange) 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        .logo:hover .logo-icon {
+            color: var(--accent-orange-light);
+            transform: scale(1.1);
+            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
         }
 
-        .hero-subtitle {
-            font-size: 1.3rem;
-            color: var(--text-gray);
-            margin-bottom: 2rem;
-            line-height: 1.6;
+        .nav-menu {
+            list-style: none;
         }
 
-        .features {
+        .nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-link {
             display: flex;
-            flex-direction: column;
-            gap: 1rem;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem 1rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .nav-link:hover i {
+            color: var(--accent-orange);
+            transform: scale(1.2);
+            filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.4));
+        }
+
+        .nav-link.active {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .nav-link.active i {
+            color: var(--accent-orange);
+            transform: scale(1.1);
+        }
+
+        .balance-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
             margin-top: 2rem;
         }
 
-        .feature {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: var(--text-gray);
-        }
-
-        .feature i {
-            color: var(--accent-orange);
-            font-size: 1.2rem;
-        }
-
-        /* Login Section */
-        .login-section {
-            display: flex;
-            justify-content: center;
-        }
-
-        .login-container {
-            width: 100%;
-            max-width: 400px;
-        }
-
-        .login-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 2.5rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-
-        .login-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: var(--accent-orange);
-        }
-
-        .login-title {
-            font-size: 1.8rem;
+        .balance-amount {
+            font-size: 1.5rem;
             font-weight: 700;
+            color: var(--success);
+            margin: 0.5rem 0;
+        }
+
+        .deposit-list {
+            margin-top: 1rem;
+        }
+
+        .deposit-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1rem;
             margin-bottom: 0.5rem;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 2rem;
+            background: var(--dark-bg);
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
             color: var(--text-light);
         }
 
-        .login-subtitle {
-            color: var(--text-gray);
-            margin-bottom: 2rem;
-        }
-
-        .auth-tabs {
+        .user-info {
             display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 2rem;
+            align-items: center;
+            gap: 1rem;
         }
 
-        .auth-tab {
-            flex: 1;
-            padding: 0.8rem;
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-dark);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-gray);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1rem;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
             background: transparent;
             border: none;
             color: var(--text-gray);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
-            font-weight: 500;
         }
 
-        .auth-tab.active {
+        .tab:hover {
+            background: rgba(255, 107, 0, 0.1);
+            color: var(--accent-orange);
+        }
+
+        .tab.active {
             background: var(--accent-orange);
             color: var(--text-light);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-            text-align: left;
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--text-light);
-            font-weight: 500;
-        }
-
-        .form-input {
-            width: 100%;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
+        .stat-card {
+            background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 8px;
-            color: var(--text-light);
-            font-size: 1rem;
-            transition: all 0.3s ease;
+            border-radius: 12px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
         }
 
-        .form-input:focus {
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
-            outline: none;
+        .stat-card:hover {
+            transform: translateY(-2px);
         }
 
-        .btn {
-            width: 100%;
-            padding: 1rem;
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
             background: var(--accent-orange);
-            color: var(--text-light);
-            border: none;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .btn:hover {
-            background: var(--accent-orange-dark);
-            transform: translateY(-1px);
-        }
-
-        .btn:disabled {
-            background: var(--text-gray);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .login-footer {
-            margin-top: 2rem;
+        .stat-title {
+            font-size: 0.9rem;
             color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
-
-        .success-message {
-            color: var(--success);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            display: none;
-        }
-
-        .code-input {
-            display: flex;
-            gap: 0.5rem;
             margin-bottom: 1rem;
         }
 
-        .code-input input {
-            flex: 1;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 2px;
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
         }
 
-        .resend-code {
-            color: var(--accent-orange);
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .resend-code:disabled {
+        .stat-subvalue {
+            font-size: 1rem;
             color: var(--text-gray);
-            cursor: not-allowed;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-weight: 600;
+        }
+
+        .table td {
+            color: var(--text-silver);
+        }
+
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .status-success {
+            background: rgba(0, 210, 106, 0.2);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(255, 170, 0, 0.2);
+            color: var(--warning);
+        }
+
+        .status-error {
+            background: rgba(255, 68, 68, 0.2);
+            color: var(--error);
+        }
+
+        /* Profile Styles */
+        .profile-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+        }
+
+        .profile-info h2 {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-id {
+            color: var(--text-gray);
+            font-family: monospace;
+        }
+
+        .devices-list {
+            margin-top: 1.5rem;
+        }
+
+        .device-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            margin-bottom: 0.8rem;
+        }
+
+        .device-info {
+            flex: 1;
+        }
+
+        .device-name {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+
+        .device-details {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .device-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .security-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .action-group {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .action-group h4 {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-gray);
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            transition: all 0.3s ease;
+        }
+
+        .empty-state:hover i {
+            opacity: 0.8;
+            transform: scale(1.1);
         }
 
         /* Responsive */
-        @media (max-width: 968px) {
-            .main-container {
+        @media (max-width: 1024px) {
+            .dashboard {
+                grid-template-columns: 200px 1fr;
+            }
+            
+            .profile-section {
                 grid-template-columns: 1fr;
-                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
             }
             
-            .hero-section {
-                text-align: center;
-            }
-            
-            .hero-title {
-                font-size: 2.5rem;
+            .sidebar {
+                display: none;
             }
         }
     </style>
 </head>
 <body>
-    <div class="main-container">
-        <!-- Hero Section -->
-        <div class="hero-section">
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-chart-line logo-icon"></i>
                 <span>BVBIT</span>
             </div>
-
-            <h1 class="hero-title">
-                Профессиональная 
-                платформа для 
-                трейдеров
-            </h1>
             
-            <p class="hero-subtitle">
-                Обмен криптовалют, аналитика и управление 
-                активами в одном месте. Присоединяйтесь к 
-                ведущей платформе для профессиональных трейдеров.
-            </p>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="statistics">
+                        <i class="fas fa-chart-bar"></i>
+                        Статистика
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="cash">
+                        <i class="fas fa-wallet"></i>
+                        Мой CA$H
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="deals">
+                        <i class="fas fa-exchange-alt"></i>
+                        Сделки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="requests">
+                        <i class="fas fa-tasks"></i>
+                        Заявки
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        Профиль
+                    </a>
+                </li>
+            </ul>
 
-            <div class="features">
-                <div class="feature">
-                    <i class="fas fa-bolt"></i>
-                    <span>Мгновенные обмены по лучшим курсам</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Максимальная безопасность и контроль</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Продвинутая аналитика и отчетность</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-globe"></i>
-                    <span>Работаем по всему миру 24/7</span>
+            <div class="balance-card">
+                <div class="balance-title">Баланс</div>
+                <div class="balance-amount">312987,71 RUB ✅</div>
+                <div class="balance-subtitle">Базис депозита (1)</div>
+                
+                <div class="deposit-list">
+                    <div class="deposit-item">
+                        <strong>RU</strong>
+                        <div>Satoshi / RU</div>
+                        <small>ID: 2aef4eaf-b5ad...</small>
+                    </div>
                 </div>
             </div>
-        </div>
+        </aside>
 
-        <!-- Login Section -->
-        <div class="login-section">
-            <div class="login-container">
-                <div class="login-card">
-                    <h1 class="login-title">Вход в систему</h1>
-                    <p class="login-subtitle">Добро пожаловать в BVBIT</p>
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="header">
+                <h1 class="page-title">Статистика</h1>
+                <div class="user-info">
+                    <div class="user-name">Satoshi Nakamoto</div>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Выйти
+                    </button>
+                </div>
+            </div>
 
-                    <div class="auth-tabs">
-                        <button class="auth-tab active" data-type="phone">📱 Телефон</button>
-                        <button class="auth-tab" data-type="email">📧 Email</button>
+            <!-- Statistics Page -->
+            <div class="page-content" id="statistics-page">
+                <div class="stats-grid">
+                    <!-- Payin Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Payin</h3>
+                        <div class="stat-value">Всего сделок</div>
+                        <div class="stat-subvalue">Завершено: 0</div>
+                        <div class="stat-subvalue">В процессе: 0</div>
                     </div>
 
-                    <!-- Phone Login Form -->
-                    <form id="phone-form" class="auth-form">
-                        <div class="form-group">
-                            <label class="form-label">Номер телефона</label>
-                            <input type="tel" class="form-input" id="phone" placeholder="+7 (999) 999-99-99" required>
-                            <div class="error-message" id="phone-error"></div>
-                        </div>
+                    <div class="stat-card">
+                        <h3 class="stat-title">Подтвержденные</h3>
+                        <div class="stat-value">0 RUB</div>
+                        <div class="stat-subvalue">0 USDT</div>
+                    </div>
 
-                        <div class="form-group" id="code-group" style="display: none;">
-                            <label class="form-label">Код подтверждения</label>
-                            <div class="code-input">
-                                <input type="text" class="form-input" id="code" placeholder="000000" maxlength="6" required>
+                    <div class="stat-card">
+                        <h3 class="stat-title">Прибыль</h3>
+                        <div class="stat-value">0 USDT</div>
+                    </div>
+
+                    <!-- Payout Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Payout</h3>
+                        <div class="stat-value">Всего сделок</div>
+                        <div class="stat-subvalue">Завершено: 0</div>
+                        <div class="stat-subvalue">В процессе: 0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Подтвержденные</h3>
+                        <div class="stat-value">245312,61 RUB</div>
+                        <div class="stat-subvalue">20321,8 USDT</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Прибыль</h3>
+                        <div class="stat-value">13245,7 USDT</div>
+                    </div>
+
+                    <!-- Additional Stats -->
+                    <div class="stat-card">
+                        <h3 class="stat-title">Активные устройства</h3>
+                        <div class="stat-value">0</div>
+                        <div class="stat-subvalue">Активные реквизиты: 0</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <h3 class="stat-title">Среднее время обработки спора</h3>
+                        <div class="stat-value">00:00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cash Page -->
+            <div class="page-content" id="cash-page" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active">Все</button>
+                    <button class="tab">Пополнения</button>
+                    <button class="tab">Выводы</button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Финансы</h3>
+                        <div class="filters">
+                            <input type="text" class="search-box" placeholder="Поиск...">
+                        </div>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Транзакция</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>ID транзакции</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="4">
+                                    <div class="empty-state">
+                                        <i class="fas fa-coins"></i>
+                                        <div>Данные отсутствуют</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Deals Page -->
+            <div class="page-content" id="deals-page" style="display: none;">
+                <div class="filters" style="margin-bottom: 2rem;">
+                    <input type="text" class="search-box" placeholder="Поиск...">
+                    <select class="search-box">
+                        <option>Все</option>
+                        <option>Завершены</option>
+                        <option>В процессе</option>
+                    </select>
+                    <select class="search-box">
+                        <option>Сумма, RUB</option>
+                        <option>Дата</option>
+                        <option>Статус</option>
+                    </select>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Сделки</h3>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                                <th>Контрагент</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-exchange-alt"></i>
+                                        <div>Данные отсутствуют</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Requests Page -->
+            <div class="page-content" id="requests-page" style="display: none;">
+                <div class="tabs">
+                    <button class="tab active">Ожидают</button>
+                    <button class="tab">В работе</button>
+                    <button class="tab">Аппеляции</button>
+                    <button class="tab">История</button>
+                </div>
+
+                <div class="table-container">
+                    <div class="table-header">
+                        <h3>Заявки</h3>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-download"></i>
+                            Принять заявки
+                        </button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID заявки</th>
+                                <th>Сумма</th>
+                                <th>Валюта</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5">
+                                    <div class="empty-state">
+                                        <i class="fas fa-tasks"></i>
+                                        <div>Данные отсутствуют</div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Profile Page -->
+            <div class="page-content" id="profile-page" style="display: none;">
+                <div class="profile-section">
+                    <!-- Profile Info -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="profile-avatar">
+                                <i class="fas fa-user"></i>
                             </div>
-                            <button type="button" class="resend-code" id="resend-code" disabled>
-                                Отправить код повторно (60)
-                            </button>
-                            <div class="error-message" id="code-error"></div>
+                            <div class="profile-info">
+                                <h2>Satoshi Nakamoto</h2>
+                                <div class="profile-id">ID: TRD-7X9B-2C4D-8A1F</div>
+                                <div style="color: var(--success); margin-top: 0.5rem;">
+                                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i>
+                                    Активен
+                                </div>
+                            </div>
                         </div>
 
-                        <button type="submit" class="btn" id="phone-submit">
-                            Получить код
-                        </button>
-                    </form>
+                        <div class="devices-list">
+                            <h4 style="color: var(--text-light); margin-bottom: 1rem;">
+                                <i class="fas fa-laptop"></i>
+                                Активные устройства (3)
+                            </h4>
+                            
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">Windows PC - Chrome</div>
+                                    <div class="device-details">
+                                        Последний вход: 15.12.2023 14:30 • IP: 192.168.1.100
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-secondary" onclick="removeDevice(1)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
 
-                    <!-- Email Login Form -->
-                    <form id="email-form" class="auth-form" style="display: none;">
-                        <div class="form-group">
-                            <label class="form-label">Email адрес</label>
-                            <input type="email" class="form-input" id="email" placeholder="your@email.com" required>
-                            <div class="error-message" id="email-error"></div>
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">Android Phone - Firefox</div>
+                                    <div class="device-details">
+                                        Последний вход: 14.12.2023 09:15 • IP: 192.168.1.101
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-secondary" onclick="removeDevice(2)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <div class="device-name">MacBook - Safari</div>
+                                    <div class="device-details">
+                                        Последний вход: 13.12.2023 18:45 • IP: 192.168.1.102
+                                    </div>
+                                </div>
+                                <div class="device-actions">
+                                    <button class="btn btn-secondary" onclick="removeDevice(3)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
+                    </div>
 
-                        <div class="form-group">
-                            <label class="form-label">Пароль</label>
-                            <input type="password" class="form-input" id="password" placeholder="••••••••" required>
-                            <div class="error-message" id="password-error"></div>
+                    <!-- Security Actions -->
+                    <div class="profile-card">
+                        <div class="security-actions">
+                            <div class="action-group">
+                                <h4><i class="fas fa-shield-alt"></i> Безопасность аккаунта</h4>
+                                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="changePassword()">
+                                    <i class="fas fa-key"></i>
+                                    Сменить пароль
+                                </button>
+                            </div>
+
+                            <div class="action-group">
+                                <h4><i class="fas fa-sign-out-alt"></i> Управление сессиями</h4>
+                                <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="logoutAllDevices()">
+                                    <i class="fas fa-globe"></i>
+                                    Выйти из всех устройств
+                                </button>
+                            </div>
+
+                            <div class="action-group">
+                                <h4><i class="fas fa-info-circle"></i> Информация об аккаунте</h4>
+                                <div style="color: var(--text-gray); line-height: 1.8;">
+                                    <div><strong>Дата регистрации:</strong> 01.11.2023</div>
+                                    <div><strong>Статус верификации:</strong> ✅ Подтвержден</div>
+                                    <div><strong>Уровень доступа:</strong> Трейдер</div>
+                                    <div><strong>Последняя активность:</strong> 15.12.2023 14:30</div>
+                                    <div><strong>Общее время онлайн:</strong> 248 часов</div>
+                                </div>
+                            </div>
                         </div>
-
-                        <button type="submit" class="btn" id="email-submit">
-                            Войти
-                        </button>
-                    </form>
-
-                    <div class="success-message" id="success-message"></div>
-
-                    <div class="login-footer">
-                        © 2024 BVBIT. Все права защищены.
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
-        // Check if user is logged in
-if (!localStorage.getItem('auth_token')) {
-    window.location.href = 'index.html';
-}
-
-// Add logout function to the dashboard
-function logout() {
-    localStorage.removeItem('auth_token');
-    window.location.href = 'index.html';
-}
-
-// Add logout button to user info in header
-document.addEventListener('DOMContentLoaded', function() {
-    const userInfo = document.querySelector('.user-info');
-    if (userInfo) {
-        const logoutBtn = document.createElement('button');
-        logoutBtn.className = 'btn btn-secondary';
-        logoutBtn.innerHTML = '<i class="fas fa-sign-out-alt"></i> Выйти';
-        logoutBtn.onclick = logout;
-        userInfo.appendChild(logoutBtn);
-    }
-});
-
-        // Phone form submission
-        document.getElementById('phone-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const phone = document.getElementById('phone').value;
-            const codeGroup = document.getElementById('code-group');
-            const submitBtn = document.getElementById('phone-submit');
-            
-            if (!codeGroup.style.display || codeGroup.style.display === 'none') {
-                // First step - request code
-                if (validatePhone(phone)) {
-                    sendSMSCode(phone);
-                    codeGroup.style.display = 'block';
-                    submitBtn.textContent = 'Подтвердить вход';
-                    startResendTimer();
-                }
-            } else {
-                // Second step - verify code
-                const code = document.getElementById('code').value;
-                if (validateCode(code)) {
-                    verifySMSCode(phone, code);
-                }
-            }
-        });
-
-        // Email form submission
-        document.getElementById('email-form').addEventListener('submit', function(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (validateEmail(email) && validatePassword(password)) {
-                loginWithEmail(email, password);
-            }
-        });
-
-        // Validation functions
-        function validatePhone(phone) {
-            const phoneRegex = /^\+7\s?\(?\d{3}\)?\s?\d{3}-?\d{2}-?\d{2}$/;
-            if (!phoneRegex.test(phone)) {
-                showError('phone-error', 'Введите корректный номер телефона');
-                return false;
-            }
-            hideError('phone-error');
-            return true;
-        }
-
-        function validateEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                showError('email-error', 'Введите корректный email адрес');
-                return false;
-            }
-            hideError('email-error');
-            return true;
-        }
-
-        function validatePassword(password) {
-            if (password.length < 6) {
-                showError('password-error', 'Пароль должен содержать минимум 6 символов');
-                return false;
-            }
-            hideError('password-error');
-            return true;
-        }
-
-        function validateCode(code) {
-            if (code.length !== 6 || !/^\d+$/.test(code)) {
-                showError('code-error', 'Введите 6-значный код');
-                return false;
-            }
-            hideError('code-error');
-            return true;
-        }
-
-        // Mock API functions
-        function sendSMSCode(phone) {
-            showSuccess('Код отправлен на ваш телефон');
-            // In real app: fetch('/api/send-sms', { phone })
-            console.log('SMS code sent to:', phone);
-        }
-
-        function verifySMSCode(phone, code) {
-            // Mock verification
-            if (code === '123456') {
-                showSuccess('Вход выполнен!');
-                // Save auth token
-                localStorage.setItem('auth_token', 'demo_token_' + Date.now());
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
-            } else {
-                showError('code-error', 'Неверный код подтверждения');
-            }
-        }
-
-        function loginWithEmail(email, password) {
-            // Mock login
-            if (email === 'demo@bvbit.com' && password === '123456') {
-                showSuccess('Вход выполнен!');
-                // Save auth token
-                localStorage.setItem('auth_token', 'demo_token_' + Date.now());
-                setTimeout(() => {
-                    window.location.href = 'dashboard.html';
-                }, 1000);
-            } else {
-                showError('password-error', 'Неверный email или пароль');
-            }
-        }
-
-        // UI helpers
-        function showError(elementId, message) {
-            const element = document.getElementById(elementId);
-            element.textContent = message;
-            element.style.display = 'block';
-        }
-
-        function hideError(elementId) {
-            document.getElementById(elementId).style.display = 'none';
-        }
-
-        function showSuccess(message) {
-            const element = document.getElementById('success-message');
-            element.textContent = message;
-            element.style.display = 'block';
-            setTimeout(() => element.style.display = 'none', 3000);
-        }
-
-        function resetForms() {
-            document.querySelectorAll('.form-input').forEach(input => input.value = '');
-            document.querySelectorAll('.error-message').forEach(msg => msg.style.display = 'none');
-            document.getElementById('code-group').style.display = 'none';
-            document.getElementById('phone-submit').textContent = 'Получить код';
-        }
-
-        function startResendTimer() {
-            let timeLeft = 60;
-            const resendBtn = document.getElementById('resend-code');
-            resendBtn.disabled = true;
-            
-            const timer = setInterval(() => {
-                resendBtn.textContent = `Отправить код повторно (${timeLeft})`;
-                timeLeft--;
+        // Navigation between pages
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
                 
-                if (timeLeft < 0) {
-                    clearInterval(timer);
-                    resendBtn.disabled = false;
-                    resendBtn.textContent = 'Отправить код повторно';
+                // Update active nav link
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Update page title
+                const pageTitle = document.querySelector('.page-title');
+                const pageName = this.textContent.trim();
+                pageTitle.textContent = pageName;
+                
+                // Show/hide pages
+                const pageId = this.getAttribute('data-page') + '-page';
+                document.querySelectorAll('.page-content').forEach(page => {
+                    page.style.display = 'none';
+                });
+                document.getElementById(pageId).style.display = 'block';
+            });
+        });
+
+        // Tab functionality
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                if (!this.classList.contains('active')) {
+                    this.parentElement.querySelectorAll('.tab').forEach(t => {
+                        t.classList.remove('active');
+                    });
+                    this.classList.add('active');
                 }
-            }, 1000);
-            
-            resendBtn.onclick = function() {
-                const phone = document.getElementById('phone').value;
-                if (validatePhone(phone)) {
-                    sendSMSCode(phone);
-                    startResendTimer();
-                }
-            };
+            });
+        });
+
+        // Profile functions
+        function removeDevice(deviceId) {
+            if (confirm('Вы уверены, что хотите удалить это устройство?')) {
+                alert(`Устройство #${deviceId} удалено`);
+                // In real app, make API call to remove device
+            }
         }
+
+        function changePassword() {
+            const newPassword = prompt('Введите новый пароль:');
+            if (newPassword) {
+                alert('Пароль успешно изменен!');
+                // In real app, make API call to change password
+            }
+        }
+
+        function logoutAllDevices() {
+            if (confirm('Вы уверены, что хотите выйти из всех устройств? Текущая сессия останется активной.')) {
+                alert('Выход со всех устройств выполнен!');
+                // In real app, make API call to logout all devices
+            }
+        }
+
+        // Mock data updates
+        function updateStats() {
+            // In real app, this would fetch from API
+            console.log('Updating dashboard stats...');
+        }
+
+        // Initialize
+        updateStats();
+        setInterval(updateStats, 30000); // Update every 30 seconds
     </script>
 </body>
 </html>
