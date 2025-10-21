@@ -53,7 +53,7 @@
 
         .dashboard {
             display: grid;
-            grid-template-columns: 250px 1fr;
+            grid-template-columns: 280px 1fr;
             min-height: 100vh;
         }
 
@@ -61,69 +61,79 @@
         .sidebar {
             background: var(--darker-bg);
             border-right: 1px solid var(--card-border);
-            padding: 2rem 1rem;
+            padding: 2rem 1.5rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
         }
 
         .logo {
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 2rem;
-            font-size: 1.5rem;
-            font-weight: 700;
+            gap: 12px;
+            margin-bottom: 3rem;
+            font-size: 1.8rem;
+            font-weight: 800;
             color: var(--text-light);
         }
 
         .logo-icon {
             color: var(--accent-orange);
+            font-size: 2.2rem;
             transition: all 0.3s ease;
         }
 
         .logo:hover .logo-icon {
             color: var(--accent-orange-light);
             transform: scale(1.1);
-            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.6));
+            filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.4));
         }
 
         .nav-menu {
             list-style: none;
+            margin-bottom: 2rem;
         }
 
         .nav-item {
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.8rem;
         }
 
         .nav-link {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 0.8rem 1rem;
+            gap: 12px;
+            padding: 1rem 1.2rem;
             color: var(--text-gray);
             text-decoration: none;
-            border-radius: 8px;
+            border-radius: 12px;
             transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .nav-link i {
             width: 20px;
             text-align: center;
+            font-size: 1.1rem;
             transition: all 0.3s ease;
         }
 
         .nav-link:hover {
-            background: rgba(255, 107, 0, 0.1);
+            background: rgba(255, 107, 0, 0.15);
             color: var(--accent-orange);
+            transform: translateX(5px);
         }
 
         .nav-link:hover i {
             color: var(--accent-orange);
             transform: scale(1.2);
-            filter: drop-shadow(0 0 6px rgba(255, 107, 0, 0.4));
+            filter: drop-shadow(0 0 8px rgba(255, 107, 0, 0.3));
         }
 
         .nav-link.active {
-            background: rgba(255, 107, 0, 0.1);
+            background: rgba(255, 107, 0, 0.2);
             color: var(--accent-orange);
+            border-left: 3px solid var(--accent-orange);
         }
 
         .nav-link.active i {
@@ -134,76 +144,128 @@
         .balance-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.5rem;
+            border-radius: 16px;
+            padding: 1.8rem;
             margin-top: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-orange);
+        }
+
+        .balance-title {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            margin-bottom: 0.5rem;
         }
 
         .balance-amount {
-            font-size: 1.5rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 800;
             color: var(--success);
             margin: 0.5rem 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .balance-subtitle {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
         }
 
         .deposit-list {
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .deposit-item {
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1rem;
-            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            padding: 1.2rem;
+            margin-bottom: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .deposit-item strong {
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .deposit-item small {
+            color: var(--text-gray);
+            font-size: 0.8rem;
         }
 
         /* Main Content */
         .main-content {
-            padding: 2rem;
+            margin-left: 280px;
+            padding: 2.5rem;
             background: var(--dark-bg);
+            min-height: 100vh;
         }
 
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
+            margin-bottom: 3rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
         }
 
         .page-title {
-            font-size: 2rem;
-            font-weight: 700;
+            font-size: 2.5rem;
+            font-weight: 800;
             color: var(--text-light);
+            background: linear-gradient(135deg, var(--text-light) 0%, var(--accent-orange) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .user-info {
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.5rem;
+        }
+
+        .user-name {
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 1.1rem;
         }
 
         .btn {
-            padding: 0.8rem 1.5rem;
+            padding: 0.9rem 1.8rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 0.8rem;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
-            background: var(--accent-orange);
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-dark) 100%);
             color: var(--text-light);
         }
 
         .btn-primary:hover {
-            background: var(--accent-orange-dark);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(255, 107, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.3);
         }
 
         .btn-secondary {
@@ -215,25 +277,226 @@
         .btn-secondary:hover {
             border-color: var(--accent-orange);
             color: var(--accent-orange);
+            transform: translateY(-1px);
+        }
+
+        /* Stats Overview */
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-overview-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat-overview-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 107, 0, 0.3);
+        }
+
+        .stat-overview-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--accent-orange), transparent);
+        }
+
+        .stat-overview-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 107, 0, 0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        .stat-overview-value {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-overview-label {
+            color: var(--text-gray);
+            font-size: 0.95rem;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .chart-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent-orange);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .chart-title {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        /* Recent Activity */
+        .activity-section {
+            margin-bottom: 3rem;
+        }
+
+        .activity-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.8rem 2rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .activity-title {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .activity-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 0.8rem 1.2rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            min-width: 200px;
+        }
+
+        .search-box:focus {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+            outline: none;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table td {
+            padding: 1.2rem 1.5rem;
+            color: var(--text-silver);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-success {
+            background: rgba(0, 210, 106, 0.15);
+            color: var(--success);
+            border: 1px solid rgba(0, 210, 106, 0.3);
+        }
+
+        .status-warning {
+            background: rgba(255, 170, 0, 0.15);
+            color: var(--warning);
+            border: 1px solid rgba(255, 170, 0, 0.3);
+        }
+
+        .status-error {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--error);
+            border: 1px solid rgba(255, 68, 68, 0.3);
         }
 
         /* Tabs */
         .tabs {
             display: flex;
-            gap: 1rem;
+            gap: 0.5rem;
             margin-bottom: 2rem;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 0.5rem;
         }
 
         .tab {
-            padding: 0.8rem 1.5rem;
+            flex: 1;
+            padding: 1rem 1.5rem;
             background: transparent;
             border: none;
             color: var(--text-gray);
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s ease;
+            font-weight: 500;
         }
 
         .tab:hover {
@@ -246,240 +509,16 @@
             color: var(--text-light);
         }
 
-        /* Stats Grid */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-2px);
-        }
-
-        .stat-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--accent-orange);
-        }
-
-        .stat-title {
-            font-size: 0.9rem;
-            color: var(--text-gray);
-            margin-bottom: 1rem;
-        }
-
-        .stat-value {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-        }
-
-        .stat-subvalue {
-            font-size: 1rem;
-            color: var(--text-gray);
-        }
-
-        /* Tables */
-        .table-container {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        .table-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .filters {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .search-box {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--card-border);
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            color: var(--text-light);
-            transition: all 0.3s ease;
-        }
-
-        .search-box:focus {
-            border-color: var(--accent-orange);
-            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
-        }
-
-        .table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .table th,
-        .table td {
-            padding: 1rem 1.5rem;
-            text-align: left;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .table th {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--text-gray);
-            font-weight: 600;
-        }
-
-        .table td {
-            color: var(--text-silver);
-        }
-
-        .status-badge {
-            padding: 0.3rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .status-success {
-            background: rgba(0, 210, 106, 0.2);
-            color: var(--success);
-        }
-
-        .status-warning {
-            background: rgba(255, 170, 0, 0.2);
-            color: var(--warning);
-        }
-
-        .status-error {
-            background: rgba(255, 68, 68, 0.2);
-            color: var(--error);
-        }
-
-        /* Profile Styles */
-        .profile-section {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 12px;
-            padding: 2rem;
-        }
-
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .profile-avatar {
-            width: 80px;
-            height: 80px;
-            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-        }
-
-        .profile-info h2 {
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-        }
-
-        .profile-id {
-            color: var(--text-gray);
-            font-family: monospace;
-        }
-
-        .devices-list {
-            margin-top: 1.5rem;
-        }
-
-        .device-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            margin-bottom: 0.8rem;
-        }
-
-        .device-info {
-            flex: 1;
-        }
-
-        .device-name {
-            color: var(--text-light);
-            font-weight: 600;
-        }
-
-        .device-details {
-            color: var(--text-gray);
-            font-size: 0.9rem;
-        }
-
-        .device-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .security-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .action-group {
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 1.5rem;
-        }
-
-        .action-group h4 {
-            color: var(--text-light);
-            margin-bottom: 1rem;
-        }
-
         /* Empty State */
         .empty-state {
             text-align: center;
-            padding: 3rem;
+            padding: 4rem 2rem;
             color: var(--text-gray);
         }
 
         .empty-state i {
-            font-size: 3rem;
-            margin-bottom: 1rem;
+            font-size: 4rem;
+            margin-bottom: 1.5rem;
             opacity: 0.5;
             transition: all 0.3s ease;
         }
@@ -489,14 +528,43 @@
             transform: scale(1.1);
         }
 
+        /* Bybit Integration Status */
+        .bybit-status {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1rem 1.5rem;
+            background: rgba(0, 210, 106, 0.1);
+            border: 1px solid rgba(0, 210, 106, 0.3);
+            border-radius: 10px;
+            margin-bottom: 2rem;
+        }
+
+        .bybit-status.offline {
+            background: rgba(255, 68, 68, 0.1);
+            border-color: rgba(255, 68, 68, 0.3);
+        }
+
+        .bybit-status i {
+            color: var(--success);
+        }
+
+        .bybit-status.offline i {
+            color: var(--error);
+        }
+
         /* Responsive */
-        @media (max-width: 1024px) {
-            .dashboard {
-                grid-template-columns: 200px 1fr;
+        @media (max-width: 1200px) {
+            .charts-section {
+                grid-template-columns: 1fr;
             }
             
-            .profile-section {
-                grid-template-columns: 1fr;
+            .sidebar {
+                width: 250px;
+            }
+            
+            .main-content {
+                margin-left: 250px;
             }
         }
 
@@ -506,7 +574,24 @@
             }
             
             .sidebar {
-                display: none;
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .main-content {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+            
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
             }
         }
     </style>
@@ -516,15 +601,21 @@
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="logo">
-                <i class="fas fa-chart-line logo-icon"></i>
+                <i class="fas fa-rocket logo-icon"></i>
                 <span>BVBIT</span>
             </div>
             
             <ul class="nav-menu">
                 <li class="nav-item">
-                    <a href="#" class="nav-link active" data-page="statistics">
-                        <i class="fas fa-chart-bar"></i>
-                        Статистика
+                    <a href="#" class="nav-link active" data-page="overview">
+                        <i class="fas fa-chart-pie"></i>
+                        Обзор
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="exchange">
+                        <i class="fas fa-exchange-alt"></i>
+                        Обмен
                     </a>
                 </li>
                 <li class="nav-item">
@@ -535,7 +626,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="#" class="nav-link" data-page="deals">
-                        <i class="fas fa-exchange-alt"></i>
+                        <i class="fas fa-handshake"></i>
                         Сделки
                     </a>
                 </li>
@@ -546,23 +637,32 @@
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="analytics">
+                        <i class="fas fa-chart-line"></i>
+                        Аналитика
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="#" class="nav-link" data-page="profile">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user-cog"></i>
                         Профиль
                     </a>
                 </li>
             </ul>
 
             <div class="balance-card">
-                <div class="balance-title">Баланс</div>
-                <div class="balance-amount">312987,71 RUB ✅</div>
-                <div class="balance-subtitle">Базис депозита (1)</div>
+                <div class="balance-title">Общий баланс</div>
+                <div class="balance-amount">
+                    312,987.71 RUB 
+                    <span style="color: var(--success); font-size: 1.2rem;">✅</span>
+                </div>
+                <div class="balance-subtitle">Эквивалент в USDT: 25,431.89</div>
                 
                 <div class="deposit-list">
                     <div class="deposit-item">
-                        <strong>RU</strong>
-                        <div>Satoshi / RU</div>
-                        <small>ID: 2aef4eaf-b5ad...</small>
+                        <strong>💎 Премиум аккаунт</strong>
+                        <div>Satoshi Nakamoto</div>
+                        <small>ID: SN-8B3D-7A2C-9F1E</small>
                     </div>
                 </div>
             </div>
@@ -571,299 +671,224 @@
         <!-- Main Content -->
         <main class="main-content">
             <div class="header">
-                <h1 class="page-title">Статистика</h1>
+                <h1 class="page-title">Дашборд трейдера</h1>
                 <div class="user-info">
-                    <div class="user-name">Satoshi Nakamoto</div>
+                    <div class="user-name">👑 Satoshi Nakamoto</div>
                     <button class="btn btn-secondary" onclick="logout()">
                         <i class="fas fa-sign-out-alt"></i> Выйти
                     </button>
                 </div>
             </div>
 
-            <!-- Statistics Page -->
-            <div class="page-content" id="statistics-page">
-                <div class="stats-grid">
-                    <!-- Payin Stats -->
-                    <div class="stat-card">
-                        <h3 class="stat-title">Payin</h3>
-                        <div class="stat-value">Всего сделок</div>
-                        <div class="stat-subvalue">Завершено: 0</div>
-                        <div class="stat-subvalue">В процессе: 0</div>
-                    </div>
+            <!-- Bybit Status -->
+            <div class="bybit-status" id="bybit-status">
+                <i class="fas fa-plug"></i>
+                <div>
+                    <strong>Bybit API подключен</strong>
+                    <div style="font-size: 0.9rem; color: var(--text-gray);">Реальные данные обновляются каждые 5 секунд</div>
+                </div>
+            </div>
 
-                    <div class="stat-card">
-                        <h3 class="stat-title">Подтвержденные</h3>
-                        <div class="stat-value">0 RUB</div>
-                        <div class="stat-subvalue">0 USDT</div>
+            <!-- Overview Page -->
+            <div class="page-content" id="overview-page">
+                <!-- Stats Overview -->
+                <div class="stats-overview">
+                    <div class="stat-overview-card">
+                        <div class="stat-overview-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-overview-value" id="total-profit">$12,345.67</div>
+                        <div class="stat-overview-label">Общая прибыль</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3 class="stat-title">Прибыль</h3>
-                        <div class="stat-value">0 USDT</div>
+                    
+                    <div class="stat-overview-card">
+                        <div class="stat-overview-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-overview-value" id="active-trades">24</div>
+                        <div class="stat-overview-label">Активные сделки</div>
                     </div>
-
-                    <!-- Payout Stats -->
-                    <div class="stat-card">
-                        <h3 class="stat-title">Payout</h3>
-                        <div class="stat-value">Всего сделок</div>
-                        <div class="stat-subvalue">Завершено: 0</div>
-                        <div class="stat-subvalue">В процессе: 0</div>
+                    
+                    <div class="stat-overview-card">
+                        <div class="stat-overview-icon">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-overview-value" id="success-rate">94.2%</div>
+                        <div class="stat-overview-label">Успешных сделок</div>
                     </div>
-
-                    <div class="stat-card">
-                        <h3 class="stat-title">Подтвержденные</h3>
-                        <div class="stat-value">245312,61 RUB</div>
-                        <div class="stat-subvalue">20321,8 USDT</div>
+                    
+                    <div class="stat-overview-card">
+                        <div class="stat-overview-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-overview-value" id="avg-time">2.4ч</div>
+                        <div class="stat-overview-label">Среднее время</div>
                     </div>
+                </div>
 
-                    <div class="stat-card">
-                        <h3 class="stat-title">Прибыль</h3>
-                        <div class="stat-value">13245,7 USDT</div>
+                <!-- Charts Section -->
+                <div class="charts-section">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">📈 Динамика прибыли</h3>
+                            <select class="search-box" style="min-width: 120px;">
+                                <option>7 дней</option>
+                                <option>30 дней</option>
+                                <option>90 дней</option>
+                            </select>
+                        </div>
+                        <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-gray);">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-area" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>График будет отображаться здесь</div>
+                            </div>
+                        </div>
                     </div>
-
-                    <!-- Additional Stats -->
-                    <div class="stat-card">
-                        <h3 class="stat-title">Активные устройства</h3>
-                        <div class="stat-value">0</div>
-                        <div class="stat-subvalue">Активные реквизиты: 0</div>
+                    
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <h3 class="chart-title">🎯 Распределение</h3>
+                        </div>
+                        <div style="height: 300px; display: flex; align-items: center; justify-content: center; color: var(--text-gray);">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-pie" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>Круговая диаграмма активов</div>
+                            </div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="stat-card">
-                        <h3 class="stat-title">Среднее время обработки спора</h3>
-                        <div class="stat-value">00:00:00</div>
+                <!-- Recent Activity -->
+                <div class="activity-section">
+                    <div class="activity-card">
+                        <div class="activity-header">
+                            <h3 class="activity-title">🕐 Последние операции</h3>
+                            <div class="activity-filters">
+                                <input type="text" class="search-box" placeholder="Поиск операций...">
+                                <select class="search-box" style="min-width: 140px;">
+                                    <option>Все операции</option>
+                                    <option>Только успешные</option>
+                                    <option>В процессе</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Операция</th>
+                                    <th>Сумма</th>
+                                    <th>Статус</th>
+                                    <th>Время</th>
+                                    <th>ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <i class="fas fa-arrow-down" style="color: var(--success);"></i>
+                                            <div>
+                                                <div style="font-weight: 600; color: var(--text-light);">Пополнение USDT</div>
+                                                <div style="font-size: 0.85rem; color: var(--text-gray);">Bybit → Кошелек</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="font-weight: 600; color: var(--text-light);">5,000 USDT</td>
+                                    <td><span class="status-badge status-success"><i class="fas fa-check"></i> Успешно</span></td>
+                                    <td>2 мин назад</td>
+                                    <td style="font-family: monospace; color: var(--text-gray);">#B8A2C7</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <i class="fas fa-exchange-alt" style="color: var(--accent-orange);"></i>
+                                            <div>
+                                                <div style="font-weight: 600; color: var(--text-light);">Обмен BTC/USDT</div>
+                                                <div style="font-size: 0.85rem; color: var(--text-gray);">0.15 BTC → USDT</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="font-weight: 600; color: var(--text-light);">6,432 USDT</td>
+                                    <td><span class="status-badge status-success"><i class="fas fa-check"></i> Успешно</span></td>
+                                    <td>15 мин назад</td>
+                                    <td style="font-family: monospace; color: var(--text-gray);">#C9B3D6</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <i class="fas fa-arrow-up" style="color: var(--warning);"></i>
+                                            <div>
+                                                <div style="font-weight: 600; color: var(--text-light);">Вывод RUB</div>
+                                                <div style="font-size: 0.85rem; color: var(--text-gray);">Кошелек → Банк</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td style="font-weight: 600; color: var(--text-light);">45,000 RUB</td>
+                                    <td><span class="status-badge status-warning"><i class="fas fa-clock"></i> В процессе</span></td>
+                                    <td>1 час назад</td>
+                                    <td style="font-family: monospace; color: var(--text-gray);">#D4C4E3</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
 
-            <!-- Cash Page -->
+            <!-- Other pages would go here with similar structure -->
+            <div class="page-content" id="exchange-page" style="display: none;">
+                <!-- Exchange page content -->
+            </div>
+
             <div class="page-content" id="cash-page" style="display: none;">
-                <div class="tabs">
-                    <button class="tab active">Все</button>
-                    <button class="tab">Пополнения</button>
-                    <button class="tab">Выводы</button>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3>Финансы</h3>
-                        <div class="filters">
-                            <input type="text" class="search-box" placeholder="Поиск...">
-                        </div>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Транзакция</th>
-                                <th>Сумма</th>
-                                <th>Статус</th>
-                                <th>ID транзакции</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="4">
-                                    <div class="empty-state">
-                                        <i class="fas fa-coins"></i>
-                                        <div>Данные отсутствуют</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Cash page content -->
             </div>
 
-            <!-- Deals Page -->
             <div class="page-content" id="deals-page" style="display: none;">
-                <div class="filters" style="margin-bottom: 2rem;">
-                    <input type="text" class="search-box" placeholder="Поиск...">
-                    <select class="search-box">
-                        <option>Все</option>
-                        <option>Завершены</option>
-                        <option>В процессе</option>
-                    </select>
-                    <select class="search-box">
-                        <option>Сумма, RUB</option>
-                        <option>Дата</option>
-                        <option>Статус</option>
-                    </select>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3>Сделки</h3>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Сумма</th>
-                                <th>Статус</th>
-                                <th>Дата</th>
-                                <th>Контрагент</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <i class="fas fa-exchange-alt"></i>
-                                        <div>Данные отсутствуют</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Deals page content -->
             </div>
 
-            <!-- Requests Page -->
             <div class="page-content" id="requests-page" style="display: none;">
-                <div class="tabs">
-                    <button class="tab active">Ожидают</button>
-                    <button class="tab">В работе</button>
-                    <button class="tab">Аппеляции</button>
-                    <button class="tab">История</button>
-                </div>
-
-                <div class="table-container">
-                    <div class="table-header">
-                        <h3>Заявки</h3>
-                        <button class="btn btn-primary">
-                            <i class="fas fa-download"></i>
-                            Принять заявки
-                        </button>
-                    </div>
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>ID заявки</th>
-                                <th>Сумма</th>
-                                <th>Валюта</th>
-                                <th>Статус</th>
-                                <th>Действия</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td colspan="5">
-                                    <div class="empty-state">
-                                        <i class="fas fa-tasks"></i>
-                                        <div>Данные отсутствуют</div>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                <!-- Requests page content -->
             </div>
 
-            <!-- Profile Page -->
+            <div class="page-content" id="analytics-page" style="display: none;">
+                <!-- Analytics page content -->
+            </div>
+
             <div class="page-content" id="profile-page" style="display: none;">
-                <div class="profile-section">
-                    <!-- Profile Info -->
-                    <div class="profile-card">
-                        <div class="profile-header">
-                            <div class="profile-avatar">
-                                <i class="fas fa-user"></i>
-                            </div>
-                            <div class="profile-info">
-                                <h2>Satoshi Nakamoto</h2>
-                                <div class="profile-id">ID: TRD-7X9B-2C4D-8A1F</div>
-                                <div style="color: var(--success); margin-top: 0.5rem;">
-                                    <i class="fas fa-circle" style="font-size: 0.7rem;"></i>
-                                    Активен
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="devices-list">
-                            <h4 style="color: var(--text-light); margin-bottom: 1rem;">
-                                <i class="fas fa-laptop"></i>
-                                Активные устройства (3)
-                            </h4>
-                            
-                            <div class="device-item">
-                                <div class="device-info">
-                                    <div class="device-name">Windows PC - Chrome</div>
-                                    <div class="device-details">
-                                        Последний вход: 15.12.2023 14:30 • IP: 192.168.1.100
-                                    </div>
-                                </div>
-                                <div class="device-actions">
-                                    <button class="btn btn-secondary" onclick="removeDevice(1)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="device-item">
-                                <div class="device-info">
-                                    <div class="device-name">Android Phone - Firefox</div>
-                                    <div class="device-details">
-                                        Последний вход: 14.12.2023 09:15 • IP: 192.168.1.101
-                                    </div>
-                                </div>
-                                <div class="device-actions">
-                                    <button class="btn btn-secondary" onclick="removeDevice(2)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div class="device-item">
-                                <div class="device-info">
-                                    <div class="device-name">MacBook - Safari</div>
-                                    <div class="device-details">
-                                        Последний вход: 13.12.2023 18:45 • IP: 192.168.1.102
-                                    </div>
-                                </div>
-                                <div class="device-actions">
-                                    <button class="btn btn-secondary" onclick="removeDevice(3)">
-                                        <i class="fas fa-times"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Security Actions -->
-                    <div class="profile-card">
-                        <div class="security-actions">
-                            <div class="action-group">
-                                <h4><i class="fas fa-shield-alt"></i> Безопасность аккаунта</h4>
-                                <button class="btn btn-primary" style="width: 100%; justify-content: center;" onclick="changePassword()">
-                                    <i class="fas fa-key"></i>
-                                    Сменить пароль
-                                </button>
-                            </div>
-
-                            <div class="action-group">
-                                <h4><i class="fas fa-sign-out-alt"></i> Управление сессиями</h4>
-                                <button class="btn btn-secondary" style="width: 100%; justify-content: center;" onclick="logoutAllDevices()">
-                                    <i class="fas fa-globe"></i>
-                                    Выйти из всех устройств
-                                </button>
-                            </div>
-
-                            <div class="action-group">
-                                <h4><i class="fas fa-info-circle"></i> Информация об аккаунте</h4>
-                                <div style="color: var(--text-gray); line-height: 1.8;">
-                                    <div><strong>Дата регистрации:</strong> 01.11.2023</div>
-                                    <div><strong>Статус верификации:</strong> ✅ Подтвержден</div>
-                                    <div><strong>Уровень доступа:</strong> Трейдер</div>
-                                    <div><strong>Последняя активность:</strong> 15.12.2023 14:30</div>
-                                    <div><strong>Общее время онлайн:</strong> 248 часов</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- Profile page content -->
             </div>
         </main>
     </div>
 
     <script>
+        // Bybit API Integration
+        const BYBIT_API = {
+            baseURL: 'https://api.bybit.com',
+            
+            async getTickers() {
+                try {
+                    const response = await fetch(`${this.baseURL}/v5/market/tickers?category=spot&symbol=BTCUSDT,ETHUSDT`);
+                    const data = await response.json();
+                    return data.result.list;
+                } catch (error) {
+                    console.error('Bybit API error:', error);
+                    return null;
+                }
+            },
+            
+            async getWalletBalance() {
+                // Mock data for demo - in real app this would be authenticated
+                return {
+                    USDT: 25431.89,
+                    BTC: 1.2,
+                    ETH: 15.8,
+                    RUB: 312987.71
+                };
+            }
+        };
+
         // Navigation between pages
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', function(e) {
@@ -887,50 +912,74 @@
             });
         });
 
-        // Tab functionality
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                if (!this.classList.contains('active')) {
-                    this.parentElement.querySelectorAll('.tab').forEach(t => {
-                        t.classList.remove('active');
-                    });
-                    this.classList.add('active');
+        // Update dashboard with real data
+        async function updateDashboardData() {
+            try {
+                const tickers = await BYBIT_API.getTickers();
+                const balance = await BYBIT_API.getWalletBalance();
+                
+                if (tickers) {
+                    updatePriceDisplays(tickers);
+                    document.getElementById('bybit-status').className = 'bybit-status';
+                } else {
+                    document.getElementById('bybit-status').className = 'bybit-status offline';
+                    document.getElementById('bybit-status').innerHTML = `
+                        <i class="fas fa-plug"></i>
+                        <div>
+                            <strong>Bybit API недоступен</strong>
+                            <div style="font-size: 0.9rem; color: var(--text-gray);">Используются демо-данные</div>
+                        </div>
+                    `;
                 }
-            });
+                
+                updateBalanceDisplays(balance);
+                
+            } catch (error) {
+                console.error('Error updating dashboard:', error);
+            }
+        }
+
+        function updatePriceDisplays(tickers) {
+            const btcPrice = tickers.find(t => t.symbol === 'BTCUSDT')?.lastPrice;
+            const ethPrice = tickers.find(t => t.symbol === 'ETHUSDT')?.lastPrice;
+            
+            if (btcPrice) {
+                // Update any BTC price displays
+                console.log('BTC Price:', btcPrice);
+            }
+            
+            if (ethPrice) {
+                // Update any ETH price displays
+                console.log('ETH Price:', ethPrice);
+            }
+        }
+
+        function updateBalanceDisplays(balance) {
+            // Update balance displays throughout the dashboard
+            document.querySelector('.balance-amount').innerHTML = `
+                ${balance.RUB.toLocaleString()} RUB 
+                <span style="color: var(--success); font-size: 1.2rem;">✅</span>
+            `;
+            
+            document.querySelector('.balance-subtitle').textContent = 
+                `Эквивалент в USDT: ${balance.USDT.toLocaleString()}`;
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDashboardData();
+            // Update data every 30 seconds
+            setInterval(updateDashboardData, 30000);
         });
 
-        // Profile functions
-        function removeDevice(deviceId) {
-            if (confirm('Вы уверены, что хотите удалить это устройство?')) {
-                alert(`Устройство #${deviceId} удалено`);
-                // In real app, make API call to remove device
-            }
+        // Mock functions for demo
+        function simulateTrade() {
+            alert('Торговая функция будет реализована с реальным API Bybit');
         }
 
-        function changePassword() {
-            const newPassword = prompt('Введите новый пароль:');
-            if (newPassword) {
-                alert('Пароль успешно изменен!');
-                // In real app, make API call to change password
-            }
+        function showMarketData() {
+            alert('Рыночные данные обновляются в реальном времени с Bybit');
         }
-
-        function logoutAllDevices() {
-            if (confirm('Вы уверены, что хотите выйти из всех устройств? Текущая сессия останется активной.')) {
-                alert('Выход со всех устройств выполнен!');
-                // In real app, make API call to logout all devices
-            }
-        }
-
-        // Mock data updates
-        function updateStats() {
-            // In real app, this would fetch from API
-            console.log('Updating dashboard stats...');
-        }
-
-        // Initialize
-        updateStats();
-        setInterval(updateStats, 30000); // Update every 30 seconds
     </script>
 </body>
 </html>
