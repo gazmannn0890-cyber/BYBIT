@@ -6,10 +6,10 @@
     <title>BVBIT | Админ-панель</title>
     
     <script>
-        // Check if admin is logged in
-        if (!localStorage.getItem('admin_token')) {
-            window.location.href = 'index.html';
-        }
+    // AUTO LOGIN AS ADMIN FOR DEMO
+    if (!localStorage.getItem('admin_token')) {
+        localStorage.setItem('admin_token', 'demo_admin_token_12345');
+    }
 
         function logout() {
             localStorage.removeItem('admin_token');
