@@ -42,6 +42,20 @@ db.serialize(() => {
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
+
+  db.run(`CREATE TABLE IF NOT EXISTS payments (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    type TEXT,
+    currency TEXT,
+    amount REAL,
+    payment_method TEXT,
+    status TEXT DEFAULT 'pending',
+    details TEXT,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    completed_at DATETIME,
+    FOREIGN KEY(user_id) REFERENCES users(id)
+  )`);
   
   db.run(`CREATE TABLE IF NOT EXISTS settings (
     key TEXT PRIMARY KEY,
@@ -236,6 +250,162 @@ app.get('/api/auth/me', authenticateToken, (req, res) => {
   });
 });
 
+// Finance Routes - Пополнения и выводы
+app.post('/api/finance/deposit', authenticateToken, async (req, res) => {
+  try {
+    const { currency, amount, paymentMethod } = req.body;
+    const userId = req.user.userId;
+
+    // Валидация
+    if (!['RUB', 'USDT', 'BTC', 'ETH'].includes(currency)) {
+      return res.status(400).json({ error: 'Неверная валюта' });
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({ error: 'Сумма должна быть больше 0' });
+    }
+
+    // Создаем запись о пополнении
+    db.run(
+      `INSERT INTO payments (user_id, type, currency, amount, payment_method, status, details) 
+       VALUES (?, 'deposit', ?, ?, ?, 'pending', ?)`,
+      [userId, currency, amount, paymentMethod, JSON.stringify({
+        description: `Пополнение ${currency} через ${paymentMethod}`,
+        timestamp: new Date().toISOString()
+      })],
+      function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+
+        const paymentId = this.lastID;
+
+        // Симулируем обработку платежа (в реальном приложении здесь будет интеграция с платежной системой)
+        setTimeout(() => {
+          // Обновляем баланс пользователя
+          const balanceField = `balance_${currency.toLowerCase()}`;
+          db.run(
+            `UPDATE users SET ${balanceField} = ${balanceField} + ? WHERE id = ?`,
+            [amount, userId],
+            (err) => {
+              if (err) return;
+
+              // Обновляем статус платежа
+              db.run(
+                'UPDATE payments SET status = ?, completed_at = datetime("now") WHERE id = ?',
+                ['completed', paymentId],
+                (err) => {
+                  // Логируем успешное пополнение
+                  console.log(`User ${userId} deposited ${amount} ${currency}`);
+                }
+              );
+            }
+          );
+        }, 2000); // Симуляция обработки платежа за 2 секунды
+
+        res.json({
+          success: true,
+          paymentId,
+          message: 'Платеж принят в обработку',
+          estimatedCompletion: new Date(Date.now() + 120000).toISOString() // +2 минуты
+        });
+      }
+    );
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/finance/withdraw', authenticateToken, async (req, res) => {
+  try {
+    const { currency, amount, walletAddress, paymentMethod } = req.body;
+    const userId = req.user.userId;
+
+    // Валидация
+    if (!['USDT', 'BTC', 'ETH'].includes(currency)) {
+      return res.status(400).json({ error: 'Неверная валюта' });
+    }
+
+    if (amount <= 0) {
+      return res.status(400).json({ error: 'Сумма должна быть больше 0' });
+    }
+
+    // Проверяем баланс пользователя
+    const balanceField = `balance_${currency.toLowerCase()}`;
+    db.get(
+      `SELECT ${balanceField} as balance FROM users WHERE id = ?`,
+      [userId],
+      (err, user) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (!user || user.balance < amount) {
+          return res.status(400).json({ error: 'Недостаточно средств' });
+        }
+
+        // Создаем запись о выводе
+        db.run(
+          `INSERT INTO payments (user_id, type, currency, amount, payment_method, status, details) 
+           VALUES (?, 'withdraw', ?, ?, ?, 'pending', ?)`,
+          [userId, currency, amount, paymentMethod, JSON.stringify({
+            walletAddress: walletAddress,
+            description: `Вывод ${currency} на ${paymentMethod}`,
+            timestamp: new Date().toISOString()
+          })],
+          function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+
+            const paymentId = this.lastID;
+
+            // Резервируем средства (списываем сразу)
+            db.run(
+              `UPDATE users SET ${balanceField} = ${balanceField} - ? WHERE id = ?`,
+              [amount, userId],
+              (err) => {
+                if (err) return res.status(500).json({ error: err.message });
+
+                // Симулируем обработку вывода
+                setTimeout(() => {
+                  db.run(
+                    'UPDATE payments SET status = ?, completed_at = datetime("now") WHERE id = ?',
+                    ['completed', paymentId],
+                    (err) => {
+                      console.log(`User ${userId} withdrew ${amount} ${currency} to ${walletAddress}`);
+                    }
+                  );
+                }, 5000); // Симуляция обработки вывода за 5 секунд
+
+                res.json({
+                  success: true,
+                  paymentId,
+                  message: 'Запрос на вывод принят в обработку',
+                  estimatedCompletion: new Date(Date.now() + 300000).toISOString() // +5 минут
+                });
+              }
+            );
+          }
+        );
+      }
+    );
+    
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получить историю платежей пользователя
+app.get('/api/finance/payments', authenticateToken, (req, res) => {
+  const limit = parseInt(req.query.limit) || 20;
+  
+  db.all(`
+    SELECT * FROM payments 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC 
+    LIMIT ?
+  `, [req.user.userId, limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 // Exchange Routes
 app.post('/api/exchange/create', authenticateToken, async (req, res) => {
   try {
@@ -383,6 +553,20 @@ app.get('/api/transactions', authenticateToken, (req, res) => {
   });
 });
 
+app.get('/api/payments', authenticateToken, (req, res) => {
+  const limit = parseInt(req.query.limit) || 50;
+  db.all(`
+    SELECT p.*, u.username 
+    FROM payments p 
+    LEFT JOIN users u ON p.user_id = u.id 
+    ORDER BY p.created_at DESC 
+    LIMIT ?
+  `, [limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
+  });
+});
+
 app.get('/api/prices', async (req, res) => {
   try {
     const prices = await bybit.getTickers();
@@ -454,7 +638,9 @@ async function getPlatformStats() {
         SUM(balance_btc) as total_volume_btc,
         SUM(balance_eth) as total_volume_eth,
         (SELECT COUNT(*) FROM transactions WHERE status = 'completed') as total_transactions,
-        (SELECT SUM(fee) FROM transactions WHERE status = 'completed') as total_fees
+        (SELECT SUM(fee) FROM transactions WHERE status = 'completed') as total_fees,
+        (SELECT COUNT(*) FROM payments WHERE type = 'deposit' AND status = 'completed') as total_deposits,
+        (SELECT COUNT(*) FROM payments WHERE type = 'withdraw' AND status = 'completed') as total_withdrawals
       FROM users
     `, (err, row) => {
       if (err) reject(err);
