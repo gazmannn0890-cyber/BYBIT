@@ -22,7 +22,7 @@ db.serialize(() => {
     email TEXT UNIQUE,
     password_hash TEXT,
     balance_rub REAL DEFAULT 0,
-    balance_usdt REAL DEFAULT 0,
+    balance_usdt REAL DEFAULT 1000,
     balance_btc REAL DEFAULT 0,
     balance_eth REAL DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -47,6 +47,17 @@ db.serialize(() => {
     key TEXT PRIMARY KEY,
     value TEXT
   )`);
+
+  // Создаем тестового пользователя если нет
+  db.get('SELECT COUNT(*) as count FROM users', (err, row) => {
+    if (row.count === 0) {
+      const hashedPassword = bcrypt.hashSync('password123', 10);
+      db.run(
+        'INSERT INTO users (username, email, password_hash, balance_usdt) VALUES (?, ?, ?, ?)',
+        ['demo', 'demo@bvbit.com', hashedPassword, 1000]
+      );
+    }
+  });
 });
 
 // Bybit API Integration
@@ -90,15 +101,30 @@ class BybitAPI {
 
   getMockTickers() {
     return {
-      'BTCUSDT': 45000 + (Math.random() * 1000 - 500),
-      'ETHUSDT': 2500 + (Math.random() * 100 - 50),
-      'BNBUSDT': 320 + (Math.random() * 10 - 5),
-      'SOLUSDT': 110 + (Math.random() * 5 - 2.5),
-      'USDTBTC': 1/45000,
-      'USDTETH': 1/2500,
-      'BTCETH': 18,
-      'ETHBTC': 1/18
+      'BTCUSDT': 43250 + (Math.random() * 1000 - 500),
+      'ETHUSDT': 2380 + (Math.random() * 100 - 50),
+      'BNBUSDT': 315 + (Math.random() * 10 - 5),
+      'SOLUSDT': 105 + (Math.random() * 5 - 2.5),
+      'USDTBTC': 1/43250,
+      'USDTETH': 1/2380,
+      'BTCETH': 43250/2380,
+      'ETHBTC': 2380/43250
     };
+  }
+
+  async createOrder(symbol, side, quantity, price) {
+    // В реальном приложении здесь будет вызов API Bybit для создания ордера
+    // Для демо симулируем успешный ордер
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve({
+          success: true,
+          orderId: 'BYBIT_' + Math.random().toString(36).substr(2, 9),
+          executedQty: quantity,
+          executedPrice: price
+        });
+      }, 1000);
+    });
   }
 }
 
@@ -131,8 +157,8 @@ app.post('/api/auth/register', async (req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       
       db.run(
-        'INSERT INTO users (username, email, password_hash) VALUES (?, ?, ?)',
-        [username, email, hashedPassword],
+        'INSERT INTO users (username, email, password_hash, balance_usdt) VALUES (?, ?, ?, ?)',
+        [username, email, hashedPassword, 1000],
         function(err) {
           if (err) return res.status(500).json({ error: err.message });
           
@@ -145,7 +171,15 @@ app.post('/api/auth/register', async (req, res) => {
           res.json({ 
             success: true, 
             token,
-            user: { id: this.lastID, username, email }
+            user: { 
+              id: this.lastID, 
+              username, 
+              email,
+              balance_usdt: 1000,
+              balance_btc: 0,
+              balance_eth: 0,
+              balance_rub: 0
+            }
           });
         }
       );
@@ -181,7 +215,9 @@ app.post('/api/auth/login', async (req, res) => {
           username: user.username, 
           email: user.email,
           balance_rub: user.balance_rub,
-          balance_usdt: user.balance_usdt 
+          balance_usdt: user.balance_usdt,
+          balance_btc: user.balance_btc,
+          balance_eth: user.balance_eth
         }
       });
     });
@@ -192,11 +228,127 @@ app.post('/api/auth/login', async (req, res) => {
 });
 
 app.get('/api/auth/me', authenticateToken, (req, res) => {
-  db.get('SELECT id, username, email, balance_rub, balance_usdt FROM users WHERE id = ?', [req.user.userId], (err, user) => {
+  db.get('SELECT id, username, email, balance_rub, balance_usdt, balance_btc, balance_eth FROM users WHERE id = ?', [req.user.userId], (err, user) => {
     if (err) return res.status(500).json({ error: err.message });
     if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
     
     res.json({ success: true, user });
+  });
+});
+
+// Exchange Routes
+app.post('/api/exchange/create', authenticateToken, async (req, res) => {
+  try {
+    const { fromCurrency, toCurrency, fromAmount, toAmount, rate } = req.body;
+    const userId = req.user.userId;
+
+    // Проверяем баланс пользователя
+    const balanceField = `balance_${fromCurrency.toLowerCase()}`;
+    db.get(
+      `SELECT ${balanceField} as balance FROM users WHERE id = ?`,
+      [userId],
+      async (err, user) => {
+        if (err) return res.status(500).json({ error: err.message });
+        
+        if (!user || user.balance < fromAmount) {
+          return res.status(400).json({ error: 'Недостаточно средств' });
+        }
+
+        // Рассчитываем комиссию (0.5%)
+        const fee = fromAmount * 0.005;
+        const amountAfterFee = fromAmount - fee;
+
+        // Создаем транзакцию
+        db.run(
+          `INSERT INTO transactions (user_id, type, from_currency, to_currency, from_amount, to_amount, rate, fee, status) 
+           VALUES (?, 'exchange', ?, ?, ?, ?, ?, ?, 'pending')`,
+          [userId, fromCurrency, toCurrency, fromAmount, toAmount, rate, fee],
+          async function(err) {
+            if (err) return res.status(500).json({ error: err.message });
+
+            const transactionId = this.lastID;
+
+            try {
+              // Симулируем создание ордера на Bybit
+              const symbol = `${fromCurrency}${toCurrency}`;
+              const orderResult = await bybit.createOrder(symbol, 'sell', fromAmount, rate);
+
+              if (orderResult.success) {
+                // Обновляем балансы пользователя
+                const fromBalanceField = `balance_${fromCurrency.toLowerCase()}`;
+                const toBalanceField = `balance_${toCurrency.toLowerCase()}`;
+
+                db.run(
+                  `UPDATE users SET 
+                    ${fromBalanceField} = ${fromBalanceField} - ?,
+                    ${toBalanceField} = ${toBalanceField} + ?
+                   WHERE id = ?`,
+                  [fromAmount, toAmount, userId],
+                  (err) => {
+                    if (err) return res.status(500).json({ error: err.message });
+
+                    // Обновляем статус транзакции
+                    db.run(
+                      'UPDATE transactions SET status = ? WHERE id = ?',
+                      ['completed', transactionId],
+                      (err) => {
+                        if (err) return res.status(500).json({ error: err.message });
+
+                        res.json({
+                          success: true,
+                          transactionId,
+                          orderId: orderResult.orderId,
+                          fromAmount,
+                          toAmount,
+                          fee,
+                          newBalance: {
+                            [fromCurrency]: user.balance - fromAmount,
+                            [toCurrency]: toAmount
+                          }
+                        });
+                      }
+                    );
+                  }
+                );
+              } else {
+                db.run(
+                  'UPDATE transactions SET status = ? WHERE id = ?',
+                  ['failed', transactionId],
+                  (err) => {
+                    res.status(400).json({ error: 'Ошибка при создании ордера на бирже' });
+                  }
+                );
+              }
+            } catch (error) {
+              db.run(
+                'UPDATE transactions SET status = ? WHERE id = ?',
+                ['failed', transactionId],
+                (err) => {
+                  res.status(500).json({ error: error.message });
+                }
+              );
+            }
+          }
+        );
+      }
+    );
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Получить историю транзакций пользователя
+app.get('/api/transactions/my', authenticateToken, (req, res) => {
+  const limit = parseInt(req.query.limit) || 20;
+  
+  db.all(`
+    SELECT * FROM transactions 
+    WHERE user_id = ? 
+    ORDER BY created_at DESC 
+    LIMIT ?
+  `, [req.user.userId, limit], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json(rows);
   });
 });
 
@@ -211,7 +363,7 @@ app.get('/api/stats', async (req, res) => {
 });
 
 app.get('/api/users', authenticateToken, (req, res) => {
-  db.all('SELECT id, username, email, balance_rub, balance_usdt, created_at FROM users ORDER BY created_at DESC', (err, rows) => {
+  db.all('SELECT id, username, email, balance_rub, balance_usdt, balance_btc, balance_eth, created_at FROM users ORDER BY created_at DESC', (err, rows) => {
     if (err) return res.status(500).json({ error: err.message });
     res.json(rows);
   });
@@ -238,6 +390,24 @@ app.get('/api/prices', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Получить баланс пользователя
+app.get('/api/user/balance', authenticateToken, (req, res) => {
+  db.get('SELECT balance_rub, balance_usdt, balance_btc, balance_eth FROM users WHERE id = ?', [req.user.userId], (err, user) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (!user) return res.status(404).json({ error: 'Пользователь не найден' });
+    
+    res.json({
+      success: true,
+      balances: {
+        RUB: user.balance_rub,
+        USDT: user.balance_usdt,
+        BTC: user.balance_btc,
+        ETH: user.balance_eth
+      }
+    });
+  });
 });
 
 // Запуск сервера
@@ -281,6 +451,8 @@ async function getPlatformStats() {
         COUNT(*) as total_users,
         SUM(balance_rub) as total_volume_rub,
         SUM(balance_usdt) as total_volume_usdt,
+        SUM(balance_btc) as total_volume_btc,
+        SUM(balance_eth) as total_volume_eth,
         (SELECT COUNT(*) FROM transactions WHERE status = 'completed') as total_transactions,
         (SELECT SUM(fee) FROM transactions WHERE status = 'completed') as total_fees
       FROM users
