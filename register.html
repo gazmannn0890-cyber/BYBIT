@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVBIT | Регистрация</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #0f0f0f;
+            --darker-bg: #0a0a0a;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --accent-orange: #ff6b00;
+            --accent-orange-dark: #e55e00;
+            --text-silver: #e0e0e0;
+            --text-gray: #b0b0b0;
+            --text-light: #ffffff;
+            --success: #00d26a;
+            --error: #ff4444;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            color: var(--text-silver);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 2rem;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--text-light);
+            justify-content: center;
+        }
+
+        .logo-icon {
+            color: var(--accent-orange);
+            font-size: 2rem;
+        }
+
+        .auth-title {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            color: var(--text-light);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-dark);
+            transform: translateY(-2px);
+        }
+
+        .auth-links {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .auth-link {
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .auth-link:hover {
+            color: var(--accent-orange);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert-success {
+            background: rgba(0, 210, 106, 0.1);
+            border: 1px solid var(--success);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid var(--error);
+            color: var(--error);
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="logo">
+                <i class="fas fa-rocket logo-icon"></i>
+                <span>BVBIT</span>
+            </div>
+            
+            <h2 class="auth-title">Создать аккаунт</h2>
+            
+            <div id="alert" class="alert"></div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <input type="text" class="form-input" id="username" placeholder="Имя пользователя" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="email" class="form-input" id="email" placeholder="Email" required>
+                </div>
+                
+                <div class="form-group">
+                    <input type="password" class="form-input" id="password" placeholder="Пароль" required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    Зарегистрироваться
+                </button>
+            </form>
+            
+            <div class="auth-links">
+                <a href="index.html" class="auth-link">Уже есть аккаунт? Войти</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value
+            };
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Регистрация...';
+            
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    localStorage.setItem('auth_token', data.token);
+                    showAlert('Регистрация успешна! Перенаправление...', 'success');
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 2000);
+                } else {
+                    showAlert('Ошибка: ' + data.error, 'error');
+                }
+            } catch (error) {
+                showAlert('Ошибка сети: ' + error.message, 'error');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Зарегистрироваться';
+            }
+        });
+
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.textContent = message;
+            alert.className = `alert alert-${type}`;
+            alert.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
