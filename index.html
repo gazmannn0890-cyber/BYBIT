@@ -34,20 +34,19 @@
             background: var(--dark-bg);
             color: var(--text-silver);
             line-height: 1.6;
-            min-height: 100vh;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px;
+            padding: 0 40px;
         }
 
         /* Header Styles */
         .header {
             background: var(--darker-bg);
             border-bottom: 1px solid var(--card-border);
-            padding: 1rem 0;
+            padding: 1.2rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -63,19 +62,21 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-weight: 700;
-            font-size: 1.5rem;
+            gap: 12px;
+            font-weight: 800;
+            font-size: 1.8rem;
             color: var(--text-light);
         }
 
         .logo-icon {
             color: var(--accent-orange);
+            font-size: 2.2rem;
+            filter: drop-shadow(0 0 10px rgba(255, 107, 0, 0.3));
         }
 
         .nav-links {
             display: flex;
-            gap: 2rem;
+            gap: 3rem;
             align-items: center;
         }
 
@@ -83,11 +84,27 @@
             text-decoration: none;
             color: var(--text-gray);
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: all 0.3s ease;
+            padding: 0.8rem 0;
+            position: relative;
+            font-size: 1.1rem;
         }
 
-        .nav-link:hover {
-            color: var(--accent-orange);
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-light);
+        }
+
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1.2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 2px;
+            background: var(--accent-orange);
+            border-radius: 2px;
         }
 
         .nav-actions {
@@ -97,26 +114,27 @@
         }
 
         .btn {
-            padding: 0.75rem 1.5rem;
+            padding: 0.8rem 1.5rem;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: 8px;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
-            background: var(--accent-orange);
+            background: linear-gradient(135deg, var(--accent-orange) 0%, var(--accent-orange-dark) 100%);
             color: var(--text-light);
         }
 
         .btn-primary:hover {
-            background: var(--accent-orange-dark);
-            transform: translateY(-1px);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.4);
         }
 
         .btn-secondary {
@@ -153,7 +171,7 @@
             border-radius: 20px;
             padding: 2.5rem;
             width: 90%;
-            max-width: 400px;
+            max-width: 450px;
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
         }
 
@@ -266,8 +284,8 @@
         }
 
         .user-avatar {
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
             border-radius: 50%;
             display: flex;
@@ -275,13 +293,16 @@
             justify-content: center;
             color: white;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 1rem;
         }
 
-        /* Exchange Widget Styles */
+        /* Exchange Section */
         .exchange-section {
             padding: 4rem 0;
             background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+            min-height: 80vh;
+            display: flex;
+            align-items: center;
         }
 
         .exchange-widget {
@@ -292,6 +313,21 @@
             border-radius: 20px;
             padding: 2.5rem;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exchange-widget::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-orange) 50%, 
+                transparent 100%);
         }
 
         .widget-title {
@@ -308,6 +344,14 @@
             margin-bottom: 2rem;
         }
 
+        .form-label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
         .currency-input {
             display: flex;
             border: 2px solid var(--card-border);
@@ -320,19 +364,17 @@
 
         .currency-input:focus-within {
             border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.1);
         }
 
         .input-field {
             flex: 1;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             border: none;
             background: transparent;
             color: var(--text-light);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             font-weight: 600;
-        }
-
-        .input-field:focus {
             outline: none;
         }
 
@@ -341,22 +383,39 @@
             border-left: 1px solid var(--card-border);
             display: flex;
             align-items: center;
+            padding: 0 1rem;
         }
 
         .currency-dropdown {
-            padding: 1rem 1.5rem;
+            padding: 1rem;
             border: none;
             background: transparent;
             color: var(--text-light);
             font-weight: 600;
             cursor: pointer;
             min-width: 120px;
+            outline: none;
+            font-size: 1rem;
         }
 
         .swap-container {
             display: flex;
             justify-content: center;
             margin: 1rem 0;
+            position: relative;
+        }
+
+        .swap-container::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--card-border) 50%, 
+                transparent 100%);
         }
 
         .swap-btn {
@@ -371,13 +430,16 @@
             cursor: pointer;
             color: var(--text-gray);
             transition: all 0.3s ease;
+            position: relative;
+            z-index: 2;
+            font-size: 1.2rem;
         }
 
         .swap-btn:hover {
             background: var(--accent-orange);
             color: var(--text-light);
             border-color: var(--accent-orange);
-            transform: rotate(180deg);
+            transform: rotate(180deg) scale(1.1);
         }
 
         .exchange-info {
@@ -385,21 +447,25 @@
             border-radius: 12px;
             padding: 1.5rem;
             margin: 2rem 0;
+            border: 1px solid var(--card-border);
         }
 
         .info-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.75rem;
+            align-items: center;
+            margin-bottom: 0.8rem;
             color: var(--text-gray);
+            font-size: 0.95rem;
         }
 
         .info-row.total {
             font-weight: 700;
             color: var(--text-light);
             border-top: 1px solid var(--card-border);
-            padding-top: 0.75rem;
-            margin-top: 0.75rem;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+            font-size: 1.1rem;
         }
 
         .exchange-btn {
@@ -413,16 +479,19 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
+            margin-top: 1rem;
         }
 
         .exchange-btn:hover:not(:disabled) {
             background: var(--accent-orange-dark);
             transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 0, 0.3);
         }
 
         .exchange-btn:disabled {
             background: var(--text-gray);
             cursor: not-allowed;
+            transform: none;
         }
 
         .api-status {
@@ -432,6 +501,7 @@
             justify-content: center;
             margin-top: 1rem;
             font-size: 0.9rem;
+            color: var(--text-gray);
         }
 
         .status-online {
@@ -451,6 +521,7 @@
             font-weight: 500;
             z-index: 10000;
             animation: slideInRight 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
         }
 
         .notification.success {
@@ -472,6 +543,80 @@
                 transform: translateX(0);
                 opacity: 1;
             }
+        }
+
+        /* Features Section */
+        .features-section {
+            padding: 4rem 0;
+            background: var(--darker-bg);
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, 
+                transparent 0%, 
+                var(--accent-orange) 50%, 
+                transparent 100%);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: rgba(255, 107, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 2rem;
+            color: var(--accent-orange);
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--text-light);
+        }
+
+        .feature-card p {
+            color: var(--text-gray);
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -534,8 +679,8 @@
         <div class="container">
             <div class="nav">
                 <div class="logo">
-                    <span class="logo-icon">₿</span>
-                    <span class="logo-text">BVBIT</span>
+                    <i class="fas fa-rocket logo-icon"></i>
+                    <span>BVBIT</span>
                 </div>
                 <nav class="nav-links">
                     <a href="#" class="nav-link active">Обмен</a>
@@ -625,6 +770,36 @@
         </div>
     </section>
 
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <h2 class="section-title">Почему выбирают BVBIT</h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Мгновенный обмен</h3>
+                    <p>Сделки завершаются за 2-5 минут с гарантией лучшей цены</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Безопасность</h3>
+                    <p>Non-custodial платформа - ваши ключи, ваш контроль над средствами</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <h3>Прозрачные комиссии</h3>
+                    <p>Всего 0.5% без скрытых платежей и неожиданных списаний</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script>
         // Auth State Management
         let currentUser = null;
@@ -675,16 +850,16 @@
                     <div class="user-avatar">${initials}</div>
                     <div>
                         <div style="font-weight: 600;">${currentUser.username}</div>
-                        <div style="font-size: 0.8rem; color: var(--text-gray);">Баланс: ${currentUser.balance_usdt || 0} USDT</div>
+                        <div style="font-size: 0.8rem; color: var(--text-gray);">${currentUser.balance_usdt || 0} USDT</div>
                     </div>
                 </div>
-                <button class="btn btn-secondary" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i>
-                    Выйти
-                </button>
                 <button class="btn btn-primary" onclick="window.location.href='dashboard.html'">
                     <i class="fas fa-chart-line"></i>
                     Дашборд
+                </button>
+                <button class="btn btn-secondary" onclick="logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Выйти
                 </button>
             `;
         }
@@ -839,10 +1014,16 @@
             }, 3000);
         }
 
-        // Exchange functionality (остается без изменений)
+        // Exchange functionality
         function initExchange() {
-            // Твой существующий код обменника...
+            // Здесь будет код обменника из script.js
             console.log('Exchange initialized');
+            
+            // Временная заглушка для демонстрации
+            document.getElementById('exchange-rate').textContent = '1 USDT = 0.00054 ETH';
+            document.getElementById('total-amount').textContent = '0.054 ETH';
+            document.getElementById('api-status').innerHTML = '<i class="fas fa-circle" style="color: var(--success)"></i><span>Bybit подключен</span>';
+            document.getElementById('exchange-button').disabled = false;
         }
 
         // Close modal on outside click
