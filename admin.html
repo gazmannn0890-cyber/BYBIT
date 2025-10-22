@@ -1,0 +1,1363 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BVBIT | Админ-панель</title>
+    
+    <script>
+        // Check if admin is logged in
+        if (!localStorage.getItem('admin_token')) {
+            // Auto login for demo
+            localStorage.setItem('admin_token', 'demo_admin_token_12345');
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            window.location.href = 'index.html';
+        }
+    </script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --dark-bg: #0a0a0a;
+            --darker-bg: #050505;
+            --card-bg: #1a1a1a;
+            --card-border: #2a2a2a;
+            --accent-orange: #ff6b00;
+            --accent-orange-dark: #e55e00;
+            --text-silver: #e0e0e0;
+            --text-gray: #888;
+            --text-light: #ffffff;
+            --success: #00d26a;
+            --error: #ff4444;
+            --warning: #ffaa00;
+            --info: #0099ff;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-silver);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .admin-sidebar {
+            background: var(--darker-bg);
+            border-right: 1px solid var(--card-border);
+            padding: 2rem 1.5rem;
+            position: fixed;
+            width: 280px;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 3rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .admin-logo-icon {
+            color: var(--accent-orange);
+            font-size: 2rem;
+        }
+
+        .admin-nav {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .admin-nav-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .admin-nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 1rem 1.2rem;
+            color: var(--text-gray);
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .admin-nav-link:hover,
+        .admin-nav-link.active {
+            background: rgba(255, 107, 0, 0.15);
+            color: var(--accent-orange);
+        }
+
+        .admin-nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .admin-main {
+            margin-left: 280px;
+            padding: 2rem;
+            background: var(--dark-bg);
+            min-height: 100vh;
+        }
+
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .admin-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-light);
+        }
+
+        .admin-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-orange);
+            color: var(--text-light);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-orange-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-gray);
+            border: 1px solid var(--card-border);
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: var(--text-light);
+        }
+
+        .btn-danger {
+            background: var(--error);
+            color: var(--text-light);
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.85rem;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-orange);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-gray);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive { color: var(--success); }
+        .negative { color: var(--error); }
+
+        /* Tables */
+        .table-section {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table-title {
+            color: var(--text-light);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .table-filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-box {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            color: var(--text-light);
+            min-width: 200px;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-gray);
+            font-weight: 600;
+            padding: 1.2rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .table td {
+            padding: 1.2rem 1.5rem;
+            color: var(--text-silver);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .status-success {
+            background: rgba(0, 210, 106, 0.15);
+            color: var(--success);
+        }
+
+        .status-warning {
+            background: rgba(255, 170, 0, 0.15);
+            color: var(--warning);
+        }
+
+        .status-error {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--error);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-dark));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        /* Charts Section */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 2rem;
+        }
+
+        .chart-placeholder {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-gray);
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 8px;
+            border: 2px dashed var(--card-border);
+        }
+
+        /* System Status */
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .status-item {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .status-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .online { color: var(--success); }
+        .offline { color: var(--error); }
+        .warning { color: var(--warning); }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .action-card:hover {
+            border-color: var(--accent-orange);
+            transform: translateY(-2px);
+        }
+
+        .action-icon {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 107, 0, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--accent-orange);
+        }
+
+        /* Settings */
+        .settings-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+
+        .settings-group {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .settings-title {
+            color: var(--text-light);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 2px rgba(255, 107, 0, 0.1);
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 10000;
+            backdrop-filter: blur(10px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-light);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-gray);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--accent-orange);
+        }
+
+        /* Loading */
+        .skeleton {
+            background: linear-gradient(90deg, #2a2a2a 25%, #333 50%, #2a2a2a 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            
+            .admin-sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+            }
+            
+            .admin-main {
+                margin-left: 0;
+            }
+            
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+        <!-- Admin Sidebar -->
+        <aside class="admin-sidebar">
+            <div class="admin-logo">
+                <i class="fas fa-shield-alt admin-logo-icon"></i>
+                <span>BVBIT ADMIN</span>
+            </div>
+            
+            <ul class="admin-nav">
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link active" data-page="overview">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Обзор платформы
+                    </a>
+                </li>
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link" data-page="users">
+                        <i class="fas fa-users"></i>
+                        Пользователи
+                    </a>
+                </li>
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link" data-page="transactions">
+                        <i class="fas fa-exchange-alt"></i>
+                        Транзакции
+                    </a>
+                </li>
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link" data-page="finances">
+                        <i class="fas fa-chart-line"></i>
+                        Финансы
+                    </a>
+                </li>
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link" data-page="settings">
+                        <i class="fas fa-cog"></i>
+                        Настройки
+                    </a>
+                </li>
+                <li class="admin-nav-item">
+                    <a class="admin-nav-link" data-page="monitoring">
+                        <i class="fas fa-heartbeat"></i>
+                        Мониторинг
+                    </a>
+                </li>
+            </ul>
+
+            <div style="margin-top: 3rem; padding-top: 2rem; border-top: 1px solid var(--card-border);">
+                <div style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 1rem;">
+                    <i class="fas fa-user-shield"></i>
+                    Администратор
+                </div>
+                <div style="color: var(--text-light); font-weight: 600; margin-bottom: 0.5rem;">
+                    👑 System Administrator
+                </div>
+                <div style="color: var(--text-gray); font-size: 0.8rem;">
+                    Уровень доступа: Супер-админ
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="admin-main">
+            <div class="admin-header">
+                <h1 class="admin-title">Панель управления BVBIT</h1>
+                <div class="admin-actions">
+                    <div style="color: var(--text-gray); margin-right: 1rem;">
+                        <i class="fas fa-circle" style="color: var(--success); font-size: 0.7rem;"></i>
+                        Система активна
+                    </div>
+                    <button class="btn btn-primary" onclick="refreshData()">
+                        <i class="fas fa-sync-alt"></i>
+                        Обновить
+                    </button>
+                    <button class="btn btn-secondary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Выйти
+                    </button>
+                </div>
+            </div>
+
+            <!-- Overview Page -->
+            <div class="page-content" id="overview-page">
+                <!-- Platform Stats -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-users">1,247</div>
+                        <div class="stat-label">Всего пользователей</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +12 за сегодня
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-volume">₽2,847,150</div>
+                        <div class="stat-label">Общий объем торгов</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +5.2% за сутки
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="total-fees">₽142,357</div>
+                        <div class="stat-label">Комиссия платформы</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            +8.1% за сутки
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value" id="active-trades">324</div>
+                        <div class="stat-label">Активных сделок</div>
+                        <div class="stat-change negative">
+                            <i class="fas fa-arrow-down"></i>
+                            -3 за час
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Status -->
+                <div class="system-status">
+                    <div class="status-item">
+                        <div class="status-icon online">
+                            <i class="fas fa-server"></i>
+                        </div>
+                        <div>Bybit API</div>
+                        <div style="color: var(--success); font-weight: 600;">Online</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <div class="status-icon online">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <div>База данных</div>
+                        <div style="color: var(--success); font-weight: 600;">Online</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <div class="status-icon online">
+                            <i class="fas fa-network-wired"></i>
+                        </div>
+                        <div>WebSocket</div>
+                        <div style="color: var(--success); font-weight: 600;">Online</div>
+                    </div>
+                    
+                    <div class="status-item">
+                        <div class="status-icon warning">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div>Безопасность</div>
+                        <div style="color: var(--warning); font-weight: 600;">Проверка</div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="quick-actions">
+                    <div class="action-card" onclick="showUsers()">
+                        <div class="action-icon">
+                            <i class="fas fa-user-plus"></i>
+                        </div>
+                        <div>Добавить пользователя</div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showSettings()">
+                        <div class="action-icon">
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div>Настройки комиссий</div>
+                    </div>
+                    
+                    <div class="action-card" onclick="generateReport()">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>Создать отчет</div>
+                    </div>
+                    
+                    <div class="action-card" onclick="showMonitoring()">
+                        <div class="action-icon">
+                            <i class="fas fa-heartbeat"></i>
+                        </div>
+                        <div>Мониторинг системы</div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-grid">
+                    <div class="chart-card">
+                        <h3 style="color: var(--text-light); margin-bottom: 1.5rem;">
+                            <i class="fas fa-chart-line"></i>
+                            Объем торгов за 7 дней
+                        </h3>
+                        <div class="chart-placeholder">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-area" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>График будет отображаться здесь</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-card">
+                        <h3 style="color: var(--text-light); margin-bottom: 1.5rem;">
+                            <i class="fas fa-chart-pie"></i>
+                            Распределение валют
+                        </h3>
+                        <div class="chart-placeholder">
+                            <div style="text-align: center;">
+                                <i class="fas fa-chart-pie" style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.5;"></i>
+                                <div>Круговая диаграмма</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-clock"></i>
+                            Последние транзакции
+                        </h3>
+                        <div class="table-filters">
+                            <input type="text" class="search-box" placeholder="Поиск транзакций..." id="search-transactions">
+                            <select class="search-box" id="filter-status">
+                                <option>Все операции</option>
+                                <option>Только успешные</option>
+                                <option>В процессе</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Пользователь</th>
+                                <th>Операция</th>
+                                <th>Сумма</th>
+                                <th>Статус</th>
+                                <th>Время</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recent-transactions">
+                            <!-- Будет заполнено через API -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Users Page -->
+            <div class="page-content" id="users-page" style="display: none;">
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-users"></i>
+                            Управление пользователями
+                        </h3>
+                        <div class="table-filters">
+                            <input type="text" class="search-box" placeholder="Поиск пользователей..." id="search-users">
+                            <button class="btn btn-primary" onclick="showAddUserModal()">
+                                <i class="fas fa-user-plus"></i>
+                                Добавить пользователя
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Пользователь</th>
+                                <th>Email</th>
+                                <th>Балансы</th>
+                                <th>Дата регистрации</th>
+                                <th>Статус</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table">
+                            <!-- Будет заполнено через API -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Transactions Page -->
+            <div class="page-content" id="transactions-page" style="display: none;">
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-exchange-alt"></i>
+                            Все транзакции
+                        </h3>
+                        <div class="table-filters">
+                            <input type="text" class="search-box" placeholder="Поиск транзакций...">
+                            <select class="search-box">
+                                <option>Все статусы</option>
+                                <option>Успешные</option>
+                                <option>В процессе</option>
+                                <option>Ошибки</option>
+                            </select>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i>
+                                Экспорт
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID транзакции</th>
+                                <th>Пользователь</th>
+                                <th>Тип</th>
+                                <th>Отдано</th>
+                                <th>Получено</th>
+                                <th>Комиссия</th>
+                                <th>Статус</th>
+                                <th>Дата</th>
+                                <th>Действия</th>
+                            </tr>
+                        </thead>
+                        <tbody id="all-transactions-table">
+                            <!-- Будет заполнено через API -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Settings Page -->
+            <div class="page-content" id="settings-page" style="display: none;">
+                <div class="settings-grid">
+                    <div class="settings-group">
+                        <h3 class="settings-title">
+                            <i class="fas fa-percentage"></i>
+                            Настройки комиссий
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Комиссия платформы (%)</label>
+                            <input type="number" class="form-input" id="commission-rate" value="0.5" step="0.1" min="0" max="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Минимальная сумма обмена</label>
+                            <input type="number" class="form-input" id="min-amount" value="10" step="1" min="1">
+                        </div>
+                        
+                        <button class="btn btn-primary" onclick="saveCommissionSettings()">
+                            <i class="fas fa-save"></i>
+                            Сохранить настройки
+                        </button>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-title">
+                            <i class="fas fa-shield-alt"></i>
+                            Настройки безопасности
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Требовать 2FA для админов</label>
+                            <select class="form-input" id="require-2fa">
+                                <option value="true">Да</option>
+                                <option value="false" selected>Нет</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Лимит попыток входа</label>
+                            <input type="number" class="form-input" id="login-attempts" value="5" min="1" max="10">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Авто-выход (минуты)</label>
+                            <input type="number" class="form-input" id="auto-logout" value="30" min="5" max="240">
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-title">
+                            <i class="fas fa-bell"></i>
+                            Уведомления
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" checked>
+                                <span>Уведомлять о крупных сделках</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox" checked>
+                                <span>Уведомлять о ошибках системы</span>
+                            </label>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                <input type="checkbox">
+                                <span>Ежедневные отчеты на email</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="settings-group">
+                        <h3 class="settings-title">
+                            <i class="fas fa-plug"></i>
+                            Интеграции
+                        </h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Bybit API Key</label>
+                            <input type="password" class="form-input" placeholder="Введите API ключ">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Bybit API Secret</label>
+                            <input type="password" class="form-input" placeholder="Введите API секрет">
+                        </div>
+                        
+                        <button class="btn btn-secondary">
+                            <i class="fas fa-test"></i>
+                            Проверить подключение
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Monitoring Page -->
+            <div class="page-content" id="monitoring-page" style="display: none;">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">99.8%</div>
+                        <div class="stat-label">Аптайм системы</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">124 мс</div>
+                        <div class="stat-label">Среднее время ответа</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">2.4%</div>
+                        <div class="stat-label">Использование CPU</div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-value">1.2 ГБ</div>
+                        <div class="stat-label">Использование памяти</div>
+                    </div>
+                </div>
+
+                <div class="table-section">
+                    <div class="table-header">
+                        <h3 class="table-title">
+                            <i class="fas fa-list"></i>
+                            Логи системы
+                        </h3>
+                        <div class="table-filters">
+                            <select class="search-box">
+                                <option>Все уровни</option>
+                                <option>Ошибки</option>
+                                <option>Предупреждения</option>
+                                <option>Информация</option>
+                            </select>
+                            <button class="btn btn-primary">
+                                <i class="fas fa-download"></i>
+                                Скачать логи
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Время</th>
+                                <th>Уровень</th>
+                                <th>Модуль</th>
+                                <th>Сообщение</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2024-01-15 14:30:25</td>
+                                <td><span class="status-badge status-success">INFO</span></td>
+                                <td>API</td>
+                                <td>Успешное подключение к Bybit</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 14:28:10</td>
+                                <td><span class="status-badge status-warning">WARN</span></td>
+                                <td>Database</td>
+                                <td>Медленный запрос к таблице transactions</td>
+                            </tr>
+                            <tr>
+                                <td>2024-01-15 14:25:45</td>
+                                <td><span class="status-badge status-success">INFO</span></td>
+                                <td>Auth</td>
+                                <td>Новый пользователь зарегистрирован: user123</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Добавить пользователя</h3>
+                <button class="close-btn" onclick="closeModal('addUserModal')">&times;</button>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Имя пользователя</label>
+                <input type="text" class="form-input" id="new-username" placeholder="Введите имя пользователя">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email</label>
+                <input type="email" class="form-input" id="new-email" placeholder="Введите email">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Пароль</label>
+                <input type="password" class="form-input" id="new-password" placeholder="Введите пароль">
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Начальный баланс USDT</label>
+                <input type="number" class="form-input" id="initial-balance" value="1000" min="0">
+            </div>
+            
+            <button class="btn btn-primary" onclick="createUser()" style="width: 100%;">
+                <i class="fas fa-user-plus"></i>
+                Создать пользователя
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Global data
+        let platformStats = {};
+        let users = [];
+        let allTransactions = [];
+
+        // Initialize admin panel
+        document.addEventListener('DOMContentLoaded', function() {
+            loadPlatformData();
+            setupNavigation();
+        });
+
+        // Load platform data
+        async function loadPlatformData() {
+            try {
+                const token = localStorage.getItem('admin_token');
+                
+                // Load platform stats
+                const statsResponse = await fetch('/api/stats');
+                const stats = await statsResponse.json();
+                platformStats = stats;
+                updateStatsDisplay();
+
+                // Load users
+                const usersResponse = await fetch('/api/users', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                users = await usersResponse.json();
+                updateUsersTable();
+
+                // Load transactions
+                const transactionsResponse = await fetch('/api/transactions', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                allTransactions = await transactionsResponse.json();
+                updateTransactionsTable();
+
+            } catch (error) {
+                console.error('Error loading platform data:', error);
+            }
+        }
+
+        // Update stats display
+        function updateStatsDisplay() {
+            document.getElementById('total-users').textContent = platformStats.total_users || '1,247';
+            document.getElementById('total-volume').textContent = `₽${formatNumber(platformStats.total_volume_rub || 2847150)}`;
+            document.getElementById('total-fees').textContent = `₽${formatNumber(platformStats.total_fees || 142357)}`;
+            document.getElementById('active-trades').textContent = platformStats.total_transactions || '324';
+        }
+
+        // Update users table
+        function updateUsersTable() {
+            const tbody = document.getElementById('users-table');
+            tbody.innerHTML = '';
+
+            users.forEach(user => {
+                const row = document.createElement('tr');
+                const regDate = new Date(user.created_at).toLocaleDateString('ru-RU');
+                
+                row.innerHTML = `
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar">${user.username.substring(0, 2).toUpperCase()}</div>
+                            <div>
+                                <div style="font-weight: 600; color: var(--text-light);">${user.username}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-gray);">ID: ${user.id}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${user.email}</td>
+                    <td>
+                        <div style="font-size: 0.85rem;">
+                            <div>USDT: ${formatNumber(user.balance_usdt || 0)}</div>
+                            <div>BTC: ${formatNumber(user.balance_btc || 0)}</div>
+                            <div>ETH: ${formatNumber(user.balance_eth || 0)}</div>
+                        </div>
+                    </td>
+                    <td>${regDate}</td>
+                    <td><span class="status-badge status-success">Активен</span></td>
+                    <td>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button class="btn btn-sm btn-secondary" onclick="editUser(${user.id})">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button class="btn btn-sm btn-danger" onclick="deleteUser(${user.id})">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update transactions table
+        function updateTransactionsTable() {
+            const tbody = document.getElementById('recent-transactions');
+            tbody.innerHTML = '';
+
+            // Show only recent 5 transactions for overview
+            const recentTransactions = allTransactions.slice(0, 5);
+
+            recentTransactions.forEach(transaction => {
+                const row = document.createElement('tr');
+                const date = new Date(transaction.created_at).toLocaleString('ru-RU');
+                
+                let statusClass = 'status-warning';
+                let statusIcon = 'fa-clock';
+                let statusText = 'В процессе';
+
+                if (transaction.status === 'completed') {
+                    statusClass = 'status-success';
+                    statusIcon = 'fa-check';
+                    statusText = 'Успешно';
+                } else if (transaction.status === 'failed') {
+                    statusClass = 'status-error';
+                    statusIcon = 'fa-times';
+                    statusText = 'Ошибка';
+                }
+
+                row.innerHTML = `
+                    <td style="font-family: monospace; color: var(--text-gray);">#${transaction.id.toString().padStart(6, '0')}</td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div class="user-avatar" style="width: 30px; height: 30px; font-size: 0.8rem;">${transaction.username ? transaction.username.substring(0, 2).toUpperCase() : 'US'}</div>
+                            <div style="font-weight: 600; color: var(--text-light);">${transaction.username || 'Unknown'}</div>
+                        </div>
+                    </td>
+                    <td>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-exchange-alt" style="color: var(--accent-orange);"></i>
+                            <div>
+                                <div>${transaction.from_currency} → ${transaction.to_currency}</div>
+                                <div style="font-size: 0.8rem; color: var(--text-gray);">Обмен</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td style="font-weight: 600; color: var(--text-light);">${formatNumber(transaction.from_amount)} ${transaction.from_currency}</td>
+                    <td><span class="status-badge ${statusClass}"><i class="fas ${statusIcon}"></i> ${statusText}</span></td>
+                    <td>${date}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        // Format numbers
+        function formatNumber(num) {
+            if (!num || isNaN(num)) return '0.00';
+            return new Intl.NumberFormat('ru-RU', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            }).format(num);
+        }
+
+        // Navigation
+        function setupNavigation() {
+            document.querySelectorAll('.admin-nav-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.admin-nav-link').forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update page title
+                    const pageName = this.textContent.trim();
+                    document.querySelector('.admin-title').textContent = pageName;
+                    
+                    // Show/hide pages
+                    const pageId = this.getAttribute('data-page') + '-page';
+                    document.querySelectorAll('.page-content').forEach(page => {
+                        page.style.display = 'none';
+                    });
+                    document.getElementById(pageId).style.display = 'block';
+                });
+            });
+        }
+
+        // Modal functions
+        function showAddUserModal() {
+            document.getElementById('addUserModal').style.display = 'block';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Quick actions
+        function showUsers() {
+            document.querySelector('[data-page="users"]').click();
+        }
+
+        function showSettings() {
+            document.querySelector('[data-page="settings"]').click();
+        }
+
+        function showMonitoring() {
+            document.querySelector('[data-page="monitoring"]').click();
+        }
+
+        function generateReport() {
+            alert('Генерация отчета...');
+        }
+
+        function refreshData() {
+            loadPlatformData();
+            alert('Данные обновлены!');
+        }
+
+        // User management
+        function createUser() {
+            alert('Функция создания пользователя будет реализована в следующем обновлении');
+            closeModal('addUserModal');
+        }
+
+        function editUser(userId) {
+            alert(`Редактирование пользователя #${userId}`);
+        }
+
+        function deleteUser(userId) {
+            if (confirm(`Вы уверены, что хотите удалить пользователя #${userId}?`)) {
+                alert(`Пользователь #${userId} удален`);
+            }
+        }
+
+        function saveCommissionSettings() {
+            const commissionRate = document.getElementById('commission-rate').value;
+            alert(`Настройки комиссий сохранены: ${commissionRate}%`);
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
